@@ -1,5 +1,9 @@
 package com.asi.repository;
 
-public class CardRepository {
+import org.springframework.data.repository.CrudRepository;
+
+import com.asi.model.Card;
+
+public interface CardRepository extends CrudRepository<Card, Integer> {
 
 }
