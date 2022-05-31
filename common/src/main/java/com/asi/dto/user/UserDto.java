@@ -1,6 +1,6 @@
 package com.asi.dto;
 
-public class ProfilUserDto {
+public class UserDto {
 	private int idUser;
 	private String email;
 	private String name;
