@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+// import com.asi.dto.SaleDto;
 import com.asi.dto.SaleTransactionDto;
 import com.asi.model.Sale;
+import com.asi.rest.sale.ISaleRest;
 import com.asi.service.SaleService;
 
 @RestController
-public class SaleController {
+public class SaleController implements ISaleRest {
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -33,21 +35,21 @@ public class SaleController {
 	//TODO enlever user le param user dans les routes quand fct getcurrentUser dispo
 	// error code html
 	
-	@RequestMapping(method=RequestMethod.POST,value="/api/sales/sell")
+	@Override
 	public int sellCard(@RequestBody SaleTransactionDto saleDto) {
 		System.out.println(saleDto.getIdSale() + " " + saleDto.getIdUser() + " " + saleDto.getPriceSale());
 		int code = saleService.sell(saleDto.getIdUser(), saleDto.getIdCard(), saleDto.getPriceSale());
 		return code;
 	}
 	
-	@RequestMapping(method=RequestMethod.POST,value="/api/sales/buy")
+	@Override
 	public int buyCard(@RequestBody SaleTransactionDto saleDto) {
 		int code = saleService.buy(saleDto.getIdSale(), saleDto.getIdUser());
 		System.out.println(saleDto.getIdSale() + " " + saleDto.getIdUser());
 		return code;
 	}
 	
-	@GetMapping("/api/sales")
+	@Override
 	public List<SaleTransactionDto> get() {
 		return saleService.getAllSales()
 				.stream()

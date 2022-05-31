@@ -72,13 +72,13 @@ public class SaleService {
 		//Sale sale = new Sale(sellerId, cardId, price);		
 		//saleRepository.save(sale);
 		//cardId.setUserInstance(null);
-		//cardInstanceRepository.save(cardId);
+		//cardInstanceRepository.save(cardId);		<relativePath /> <!-- lookup parent from repository -->
 	}
 	
 	//TODO remove test sur User et use getCurrentUser() + utiliser des exceptions
 	public int buy(int idSale, int idUser) {
-		//Optional<User> buyer = userRepository.findById(idUser);
-		//Optional<Sale> sale = saleRepository.findById(idSale);
+		// Optional<BalancerUserDto> buyer = userRepository.findById(idUser);
+		// Optional<SaleDto> sale = saleRepository.findById(idSale);
 		//
 		//if(!buyer.isPresent()) {
 		//	return 500;
