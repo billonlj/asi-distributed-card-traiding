@@ -1,7 +1,5 @@
 package com.asi.dto;
 
-import com.asi.model.Card;
-
 public class CardInstanceDto {
 	private int idInstance;
 	private int cardInstance;
