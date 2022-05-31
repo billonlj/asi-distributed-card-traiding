@@ -23,6 +23,29 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     networks:
       - card-service-network
+      
+  user-db:
+    image: postgres:14-alpine
+    container_name: user-db
+    restart: always
+    environment:
+      POSTGRES_USER: login
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: bd
+    networks:
+      - user-service-network
+
+  user-services:
+    build: userService/
+    depends_on:
+      - "user-db"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/bd
+      - SPRING_DATASOURCE_USERNAME=login
+      - SPRING_DATASOURCE_PASSWORD=pwd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - user-service-network
 
   reverse-proxy:
     build: reverse-proxy/
@@ -43,3 +66,4 @@ services:
 
 networks:
   card-service-network:
+  user-service-network:
