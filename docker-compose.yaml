@@ -31,6 +31,13 @@ services:
       - "80:80"
     depends_on:
       - "card-services"
+      - "static"
+    networks:
+      - card-service-network
+
+  static:
+    build: web/
+    restart: always
     networks:
       - card-service-network
 
