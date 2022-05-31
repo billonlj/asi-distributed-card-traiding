@@ -1,5 +1,6 @@
 package com.asi.controller;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,20 +9,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asi.dto.CardDto;
 import com.asi.dto.CardInstanceDto;
 import com.asi.model.Card;
 import com.asi.model.CardInstance;
+import com.asi.rest.card.ICardRest;
 import com.asi.service.CardService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
-public class CardController {
+public class CardController implements ICardRest {
+
+	private final static Logger LOG = LoggerFactory.getLogger(CardController.class);
 	
 	@Autowired
 	ModelMapper modelMapper;
@@ -35,7 +40,7 @@ public class CardController {
 		return "Hellow world";
 	}
 	
-	@GetMapping("/api/cards/{id}")
+	@Override
 	public ResponseEntity<CardDto> get(@PathVariable int id) {
 		Card c = cardService.getCard(id);
 		if (c == null)
@@ -43,7 +48,7 @@ public class CardController {
 		return new ResponseEntity<CardDto>(convertToCardDto(c), HttpStatus.OK);
 	}
 	
-	@GetMapping("/api/cards/")
+	@Override
 	public List<CardDto> getAll() {
 		List<Card> cards = cardService.getAll();
 		return cards.stream()
@@ -52,13 +57,15 @@ public class CardController {
 	}
 	
 	// TODO
-	@PostMapping("/api/cards/users/")
+	@Override
 	public void add(CardInstanceDto cardInstanceDto) {
 		CardInstance cardInstance = convertToCardInstanceModel(cardInstanceDto);
 	}
 	
-	@PostMapping("/api/cards/users/register/{idUser}")
-	public ResponseEntity<List<CardInstanceDto>> generateCardsForNewUser(@PathVariable int idUser) {
+	@Override
+	public ResponseEntity<CardInstanceDto[]> generateCardsForNewUser(@PathVariable int idUser) {
+		LOG.info("[CardController] generateCardsForNewUser");
+
 		// On ignore les propriétés sources qui peuvent matcher plusieurs propriétés des champs du DTO
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		List<CardInstance> ci = cardService.registerNewUserCards(idUser);
@@ -66,11 +73,11 @@ public class CardController {
 		if (ci.isEmpty())
 			return ResponseEntity.internalServerError().build();
 		
-		List<CardInstanceDto> cardInstanceDto = ci.stream()
+		CardInstanceDto[] cardInstanceDto = (CardInstanceDto[]) ci.stream()
 				.map(this::convertToCardInstanceDto)
-				.collect(Collectors.toList());
+				.toArray();
 		
-		return new ResponseEntity<List<CardInstanceDto>>(cardInstanceDto, HttpStatus.OK);
+		return new ResponseEntity<CardInstanceDto[]>(cardInstanceDto, HttpStatus.OK);
 	}
 	
 	

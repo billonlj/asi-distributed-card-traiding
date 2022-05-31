@@ -1,4 +1,4 @@
-package com.asi.dto;
+package com.asi.dto.user;
 
 public class RegisterUserDto {
 	private String nameUser;

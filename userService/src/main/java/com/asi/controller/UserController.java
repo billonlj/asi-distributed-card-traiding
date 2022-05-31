@@ -1,10 +1,5 @@
 package com.asi.controller;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,15 +10,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.asi.dto.BalanceUserDto;
-import com.asi.dto.LoginUserDto;
-import com.asi.dto.RegisterUserDto;
-import com.asi.dto.UserDto;
+import com.asi.dto.user.BalanceUserDto;
+import com.asi.dto.user.LoginUserDto;
+import com.asi.dto.user.RegisterUserDto;
+import com.asi.dto.user.UserDto;
 import com.asi.model.User;
+import com.asi.rest.user.IUserRest;
 import com.asi.service.UserService;
 
 @RestController
-public class UserController {
+public class UserController implements IUserRest {
 	@Autowired
 	UserService userService;
 	
@@ -38,15 +34,15 @@ public class UserController {
 
 	}
 	
-	@RequestMapping("/api/users/profile")
+	@Override
 	@ResponseBody
-	public ResponseEntity<?> getUserProfile() {
+	public ResponseEntity<UserDto> getUserProfile() {
 		User currentUser = userService.getRequestUser();
 		if(currentUser != null) {			
 			UserDto profilUserDto = modelMapper.map(currentUser, UserDto.class);
-			return new ResponseEntity<>(profilUserDto, HttpStatus.OK);
+			return new ResponseEntity<UserDto>(profilUserDto, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<String>("No user connected", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<UserDto>(new UserDto(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -91,12 +87,12 @@ public class UserController {
 	    return new ResponseEntity<String>("Bad request", HttpStatus.BAD_REQUEST);
 	}
 	
-	@RequestMapping(value = "/api/users/balance", method=RequestMethod.POST, produces = "application/json")
+	@Override
 	@ResponseBody
-	public ResponseEntity<?> balanceUserMoney(@RequestBody BalanceUserDto userDto) {
+	public ResponseEntity<String> balanceUserMoney(@RequestBody BalanceUserDto userDto) {
 		User user = userService.getUserById(userDto.getIdUser());
 		
-		Boolean isMoneyChange = userService.changeMoneyOfUser(user,userDto.getBalanceMoney());
+		Boolean isMoneyChange = userService.changeMoneyOfUser(user, userDto.getBalanceMoney());
 		
 	    if (isMoneyChange) {
 	    	return new ResponseEntity<String>("Money has changed", HttpStatus.OK);
