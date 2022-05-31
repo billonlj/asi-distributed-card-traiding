@@ -11,12 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.asi.model.CardInstance;
 import com.asi.model.Sale;
-import com.asi.model.User;
-import com.asi.repository.CardInstanceRepository;
 import com.asi.repository.SaleRepository;
-import com.asi.repository.UserRepository;
 
 
 @Service
@@ -27,11 +23,11 @@ public class SaleService {
 
 	RestTemplate restTemplate;
 	
-	@Autowired
-	UserRepository userRepository;
-	
-	@Autowired
-	CardInstanceRepository cardInstanceRepository;
+	//@Autowired
+	//UserRepository userRepository;
+
+	//@Autowired
+	//CardInstanceRepository cardInstanceRepository;
 	
 	public Sale getSale(int id) {
         Optional<Sale> s = saleRepository.findById(id);
@@ -81,20 +77,20 @@ public class SaleService {
 	
 	//TODO remove test sur User et use getCurrentUser() + utiliser des exceptions
 	public int buy(int idSale, int idUser) {
-		Optional<User> buyer = userRepository.findById(idUser);
-		Optional<Sale> sale = saleRepository.findById(idSale);
-		
-		if(!buyer.isPresent()) {
-			return 500;
-		}
-		if(!sale.isPresent()) {
-			return 500;
-		}
-		//check si argent user suffisant
-		if(sale.get().getPriceSale() > buyer.get().getMoneyUser()) {
-			return 500;
-		}
-		buyTransaction(buyer.get(), sale.get());
+		//Optional<User> buyer = userRepository.findById(idUser);
+		//Optional<Sale> sale = saleRepository.findById(idSale);
+		//
+		//if(!buyer.isPresent()) {
+		//	return 500;
+		//}
+		//if(!sale.isPresent()) {
+		//	return 500;
+		//}
+		////check si argent user suffisant
+		//if(sale.get().getPriceSale() > buyer.get().getMoneyUser()) {
+		//	return 500;
+		//}
+		//buyTransaction(buyer.get(), sale.get());
 		return 200;
 		
 	}
@@ -102,19 +98,19 @@ public class SaleService {
 	//TODO remove test sur User et use getCurrentUser() + utiliser des exceptions
 	public int sell(int idUser, int idCardInstance, double price) {
 		//checkout si user & sale existe
-		Optional<User> seller = userRepository.findById(idUser);
-		Optional<CardInstance> card = cardInstanceRepository.findById(idCardInstance);
-		if(!seller.isPresent()) {
-			return 500;
-		}
-		if(!card.isPresent()) {
-			return 500;
-		}
-		//check user has the card
-		if(1 == 0) {
-			return 500;
-		}
-		createOfferTransaction(seller.get(), card.get(), price);
+		//Optional<User> seller = userRepository.findById(idUser);
+		//Optional<CardInstance> card = cardInstanceRepository.findById(idCardInstance);
+		//if(!seller.isPresent()) {
+		//	return 500;
+		//}
+		//if(!card.isPresent()) {
+		//	return 500;
+		//}
+		////check user has the card
+		//if(1 == 0) {
+		//	return 500;
+		//}
+		//createOfferTransaction(seller.get(), card.get(), price);
 		return 200;
 			
 	}

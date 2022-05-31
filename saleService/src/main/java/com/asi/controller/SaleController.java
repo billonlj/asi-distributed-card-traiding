@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.asi.dto.SaleDto;
 import com.asi.dto.SaleTransactionDto;
 import com.asi.model.Sale;
 import com.asi.service.SaleService;

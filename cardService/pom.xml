@@ -53,6 +53,11 @@
 		    <artifactId>modelmapper</artifactId>
 		    <version>2.3.5</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.asi.distributed.cardtrading.common</groupId>
+  			<artifactId>common</artifactId>
+  			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
