@@ -27,11 +27,10 @@ public class CardInstance {
 	
 	public CardInstance() {}
 	
-	public CardInstance(Card cardInstance, int idUser, int energyInstance, int hpInstance,
+	public CardInstance(Card cardInstance, int energyInstance, int hpInstance,
 			int attackInstance, int defenceInstance) {
 		super();
 		this.cardInstance = cardInstance;
-		this.idUser = idUser;
 		this.energyInstance = energyInstance;
 		this.hpInstance = hpInstance;
 		this.attackInstance = attackInstance;
