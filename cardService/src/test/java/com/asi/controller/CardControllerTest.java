@@ -30,11 +30,5 @@ class CardControllerTest {
 	void tearDown() throws Exception {
 	}
 
-	@Test
-	void testGetAll() {
-		
-		List<Card> result = cardService.getAll();
-		
-	}
 
 }
