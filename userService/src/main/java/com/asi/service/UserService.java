@@ -107,8 +107,6 @@ public class UserService {
 	
 	public User getRequestUser() {
 		String authToken = request.getHeader("Authorization");
-
-		System.out.println("==============" + authToken + "===================");
 		
 		if(authToken == null || authToken.isEmpty()) {			
 			return null;

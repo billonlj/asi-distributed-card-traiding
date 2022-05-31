@@ -42,7 +42,6 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> getUserProfile() {
 		User currentUser = userService.getRequestUser();
-		System.out.println(currentUser);
 		if(currentUser != null) {			
 			UserDto profilUserDto = modelMapper.map(currentUser, UserDto.class);
 			return new ResponseEntity<>(profilUserDto, HttpStatus.OK);
