@@ -4,26 +4,33 @@ services:
     image: postgres:14-alpine
     container_name: card-db
     restart: always
-    ports: 
-      - "5432:5432"
     environment:
       POSTGRES_USER: login
       POSTGRES_PASSWORD: pwd
       POSTGRES_DB: bd
+
     networks:
       - card-service-network
 
   card-services:
     build: cardService/
-    ports:
-    - "8080:8080"
     depends_on:
-    - "card-db"
+      - "card-db"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://card-db:5432/bd
       - SPRING_DATASOURCE_USERNAME=login
       - SPRING_DATASOURCE_PASSWORD=pwd
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - card-service-network
+
+  reverse-proxy:
+    build: reverse-proxy/
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - "card-services"
     networks:
       - card-service-network
 
