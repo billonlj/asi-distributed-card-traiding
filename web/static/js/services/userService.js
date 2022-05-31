@@ -11,7 +11,7 @@ const logout = () => {
 }
 
 const user_key = 'user';
-const root = 'user';
+const root = 'users';
 
 
 export default {

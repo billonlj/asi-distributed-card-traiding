@@ -3,8 +3,14 @@ package com.asi.service;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.Optional;
+
+import com.asi.dto.CardInstanceDto;
 import com.asi.model.User;
 import com.asi.repository.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -14,6 +20,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
@@ -37,12 +45,17 @@ public class UserService {
 		System.out.println("TODO: Give card to user !");
 		URL url;
 		try {
-			url = new URL("http://localhost:8080/api/cards/users/register/" + user.getIdUser());
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestProperty("accept", "application/json");
-			InputStream responseStream = connection.getInputStream();
+			//url = new URL("http://localhost/api/cards/users/register/" + user.getIdUser());
+			//HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			//connection.setRequestProperty("accept", "application/json");
+			//connection.setRequestMethod("POST");
+			//InputStream responseStream = connection.getInputStream();
 			
-			if (true) { //responseStream) {
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<CardInstanceDto[]> response = restTemplate.getForEntity("http://localhost/api/cards/users/register/"+ user.getIdUser(),CardInstanceDto[].class);
+			CardInstanceDto[] cards = response.getBody();
+
+			if (cards.length != 0) { //responseStream) {
 				return true;
 			} else {
 				return false;
@@ -94,6 +107,8 @@ public class UserService {
 	
 	public User getRequestUser() {
 		String authToken = request.getHeader("Authorization");
+
+		System.out.println("==============" + authToken + "===================");
 		
 		if(authToken == null || authToken.isEmpty()) {			
 			return null;
@@ -101,7 +116,7 @@ public class UserService {
 		
 		String email = Jwts.parser()
 				.setSigningKey(TextCodec.BASE64.decode("Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E="))
-				.parseClaimsJws(authToken)
+				.parseClaimsJws(authToken.replace("Bearer ", ""))
 				.getBody()
 				.getSubject();
 		
