@@ -99,9 +99,9 @@ public class UserController {
 		Boolean isMoneyChange = userService.changeMoneyOfUser(user,userDto.getBalanceMoney());
 		
 	    if (isMoneyChange) {
-	    	return new ResponseEntity<String>("Money is change", HttpStatus.OK);
+	    	return new ResponseEntity<String>("Money has changed", HttpStatus.OK);
 	    } else {
-	    	return new ResponseEntity<String>("An error as occured :  the user's money is not changed", HttpStatus.BAD_REQUEST);
+	    	return new ResponseEntity<String>("An error as occured :  the user's money has not changed", HttpStatus.BAD_REQUEST);
 	    }
 	}
 	
