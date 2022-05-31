@@ -21,6 +21,7 @@ import com.asi.model.CardInstance;
 import com.asi.service.CardService;
 
 @RestController
+@RequestMapping(path = "/api/cards")
 public class CardController {
 	
 	@Autowired
@@ -29,13 +30,7 @@ public class CardController {
 	@Autowired
 	CardService cardService;
 	
-	@GetMapping("/")
-	public String index() {
-		System.out.println("Hello world");
-		return "Hellow world";
-	}
-	
-	@GetMapping("/api/cards/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<CardDto> get(@PathVariable int id) {
 		Card c = cardService.getCard(id);
 		if (c == null)
@@ -43,7 +38,7 @@ public class CardController {
 		return new ResponseEntity<CardDto>(convertToCardDto(c), HttpStatus.OK);
 	}
 	
-	@GetMapping("/api/cards/")
+	@GetMapping("/")
 	public List<CardDto> getAll() {
 		List<Card> cards = cardService.getAll();
 		return cards.stream()
@@ -52,17 +47,18 @@ public class CardController {
 	}
 	
 	// TODO
-	@PostMapping("/api/cards/users/")
+	@PostMapping("/users/")
 	public void add(CardInstanceDto cardInstanceDto) {
 		CardInstance cardInstance = convertToCardInstanceModel(cardInstanceDto);
 	}
 	
-	@PostMapping("/api/cards/users/register/{idUser}")
+	@PostMapping("/users/register/{idUser}")
 	public ResponseEntity<List<CardInstanceDto>> generateCardsForNewUser(@PathVariable int idUser) {
 		// On ignore les propriétés sources qui peuvent matcher plusieurs propriétés des champs du DTO
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		List<CardInstance> ci = cardService.registerNewUserCards(idUser);
 		
+		// Si la liste est vide on renvoie un code 500
 		if (ci.isEmpty())
 			return ResponseEntity.internalServerError().build();
 		
@@ -70,7 +66,24 @@ public class CardController {
 				.map(this::convertToCardInstanceDto)
 				.collect(Collectors.toList());
 		
+		// Si la liste n'est pas vide on renvoie un code 200 et la liste des cartes insérées
 		return new ResponseEntity<List<CardInstanceDto>>(cardInstanceDto, HttpStatus.OK);
+	}
+	
+	@GetMapping("/users/{idUser}")
+	public ResponseEntity<List<CardInstanceDto>> getAllCardForOneUser(@PathVariable int idUser) {
+		// On ignore les propriétés sources qui peuvent matcher plusieurs propriétés des champs du DTO
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		List<CardInstance> cardInstances = cardService.getCardsByUser(idUser);
+		
+		if (cardInstances.isEmpty())
+			return ResponseEntity.noContent().build();
+		
+		List<CardInstanceDto> cardInstancesDto = cardInstances.stream()
+				.map(this::convertToCardInstanceDto)
+				.collect(Collectors.toList());
+		
+		return new ResponseEntity<List<CardInstanceDto>>(cardInstancesDto, HttpStatus.OK);
 	}
 	
 	

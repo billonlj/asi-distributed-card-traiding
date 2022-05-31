@@ -31,6 +31,13 @@ public class CardService {
 		throw new RuntimeException("Ressource not found");
 	}
 	
+	public List<CardInstance> getCardsByUser(int idUser) {
+		Optional<List<CardInstance>> oCards = cardinstanceRepository.findByIdUser(idUser);
+		if (oCards.isPresent())
+			return oCards.get();
+		return new ArrayList<CardInstance>();
+	}
+	
 	public List<Card> getAll() {
 		List<Card> cards = (ArrayList<Card>) cardRepository.findAll();
 		return cards;
