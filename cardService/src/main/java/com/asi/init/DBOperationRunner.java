@@ -23,8 +23,10 @@ public class DBOperationRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Family DC = new Family(0, "DC COMICS");
-        Family Marvel = new Family(1, "Marvel");
+        System.out.println("---------------------- Begin saving ----------------------");
+
+        Family DC = new Family(1, "DC COMICS");
+        Family Marvel = new Family(2, "Marvel");
 
         familyRepository.saveAll(Arrays.asList(
             DC,
@@ -37,12 +39,7 @@ public class DBOperationRunner implements CommandLineRunner {
             new Card(3, "DC COMICS", "Description de superman [insérer un jeu de mot]", 100, "Superman", DC, 50, 500, 50,"http://www.superherobroadband.com/app/themes/superhero/assets/img/superhero.gif")
         ));
         
-
-        // userService.registerUser(new User("t", "t", "t", 1000, "t"));
-        // userService.registerUser(new User(6, "r", "r", "r", 1000, "r"));
-        
-
-        System.out.println("----------All Data saved into Database----------------------");
+        System.out.println("---------------------- All Data saved into Database ----------------------");
     }
 
 }

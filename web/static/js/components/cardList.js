@@ -1,4 +1,4 @@
-import HTMLBindableElement from "./abstract/HTMLBindableElement.js";
+    import HTMLBindableElement from "./abstract/HTMLBindableElement.js";
 
 class CardList extends HTMLBindableElement {
 	constructor(cards, callback, isSell = false) {
@@ -65,17 +65,17 @@ class CardList extends HTMLBindableElement {
 		const container = this.querySelector('#tableContent');
 		const template = this.querySelector('#row');
 
-		this.cards.forEach(card => {
+		this.cards.forEach(cardInstance => {
 			const clone = document.importNode(template.content, true);
-			const cardClone = { ...card };
-            const cardInstance = card.cardInstance;
+			const cardClone = { ...cardInstance };
+            const card = cardInstance.card;
             //const cardDescription = card.cardInstance !== undefined ? card.cardInstance : card.card; 
             const newContent = clone.firstElementChild.innerHTML
-                .replace(/{{family_src}}/g, cardInstance.card.family_src)
-                .replace(/{{family_name}}/g, cardInstance.card.familyCard.nameFamily)
-                .replace(/{{img_src}}/g, cardInstance.card.sourceUrlCard)
-                .replace(/{{name}}/g, cardInstance.card.nameCard)
-				.replace(/{{description}}/g, cardInstance.card.descriptionCard)
+                .replace(/{{family_src}}/g, card.affinityCard)
+                .replace(/{{family_name}}/g, card.familyCardDto?.nameFamily)
+                .replace(/{{img_src}}/g, card.sourceUrlCard)
+                .replace(/{{name}}/g, card.nameCard)
+				.replace(/{{description}}/g, card.descriptionCard)
 				.replace(/{{hp}}/g, cardInstance.hpInstance)
 				.replace(/{{energy}}/g, cardInstance.energyInstance)
 				.replace(/{{attack}}/g, cardInstance.attackinstance)

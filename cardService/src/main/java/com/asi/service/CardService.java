@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 @Service
 public class CardService {
+	private final static Logger LOG = LoggerFactory.getLogger(CardService.class);
 	
 	@Autowired
 	CardRepository cardRepository;
@@ -27,6 +31,8 @@ public class CardService {
 	private int numberOfCardThoGenerate = 5;
 	
 	public Card getCard(int idCard) {
+		LOG.info("[getCard] idCard: " + idCard);
+
 		Optional<Card> c = cardRepository.findById(idCard);
 		if (c.isPresent())
 			return c.get();
@@ -53,11 +59,12 @@ public class CardService {
 	}
 	
 	private List<Card> getRandomCards(int nbToGenerate) {
+		List<Card> allCards = this.getAll();
 		List<Card> cards = new ArrayList<Card>();
 		Random r = new Random();
 		
 		for (int i = 0; i < nbToGenerate; i++) {
-			cards.add(this.getCard(r.nextInt((int) cardRepository.count())));
+			cards.add(allCards.get(r.nextInt(allCards.size())));
 		}
 		
 		if (cards.size() < nbToGenerate)
