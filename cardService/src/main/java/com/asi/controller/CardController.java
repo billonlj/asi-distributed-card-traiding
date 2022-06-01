@@ -1,6 +1,5 @@
 package com.asi.controller;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asi.dto.CardDto;
@@ -63,7 +61,7 @@ public class CardController implements ICardRest {
 	}
 	
 	@Override
-	public ResponseEntity<CardInstanceDto[]> generateCardsForNewUser(@PathVariable int idUser) {
+	public ResponseEntity<List<CardInstanceDto>> generateCardsForNewUser(@PathVariable int idUser) {
 		LOG.info("[CardController] generateCardsForNewUser");
 
 		// On ignore les propriétés sources qui peuvent matcher plusieurs propriétés des champs du DTO
@@ -73,11 +71,11 @@ public class CardController implements ICardRest {
 		if (ci.isEmpty())
 			return ResponseEntity.internalServerError().build();
 		
-		CardInstanceDto[] cardInstanceDto = (CardInstanceDto[]) ci.stream()
+		List<CardInstanceDto> cardInstanceDto = ci.stream()
 				.map(this::convertToCardInstanceDto)
-				.toArray();
-		
-		return new ResponseEntity<CardInstanceDto[]>(cardInstanceDto, HttpStatus.OK);
+				.collect(Collectors.toList());
+			
+		return ResponseEntity.ok(cardInstanceDto);
 	}
 	
 	

@@ -14,11 +14,11 @@ public class UserRestConsumer implements IUserRest {
 
     @Override
     public ResponseEntity<UserDto> getUserProfile() {
-        return restTemplate.getForEntity(PROFILE, UserDto.class);
+        return restTemplate.getForEntity(BASE_PATH + PROFILE, UserDto.class);
     }
 
     @Override
     public ResponseEntity<String> balanceUserMoney(BalanceUserDto userDto) {
-        return restTemplate.postForEntity(BALANCE, userDto, String.class);
+        return restTemplate.postForEntity(BASE_PATH + BALANCE, userDto, String.class);
     }
 }

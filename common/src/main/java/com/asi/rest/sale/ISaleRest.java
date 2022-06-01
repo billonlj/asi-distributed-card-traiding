@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.asi.dto.SaleTransactionDto;
+import com.asi.rest.IRest;
 
-public interface ISaleRest {
+public interface ISaleRest extends IRest {
 	public final String ROOT_PATH = "/api/sales";
 
 	public final String BUY = ROOT_PATH + "/buy";

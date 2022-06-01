@@ -14,13 +14,13 @@ public class SaleRestConsumer implements ISaleRest {
 
 	@Override
 	public int buyCard(SaleTransactionDto saleDto) {
-		restTemplate.postForEntity(BUY, saleDto, null);
+		restTemplate.postForEntity(BASE_PATH + BUY, saleDto, null);
 		return 0;
 	}
 
 	@Override
 	public int sellCard(SaleTransactionDto saleDto) {
-		restTemplate.postForEntity(SELL, saleDto, null);
+		restTemplate.postForEntity(BASE_PATH + SELL, saleDto, null);
 		return 0;
 	}
 

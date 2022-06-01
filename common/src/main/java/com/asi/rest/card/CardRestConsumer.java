@@ -1,5 +1,6 @@
 package com.asi.rest.card;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,32 +23,30 @@ public class CardRestConsumer implements ICardRest{
 
     @Override
     public ResponseEntity<CardDto> get(int id) {
-        return restTemplate.getForEntity(GET, CardDto.class, id);
+        return restTemplate.getForEntity(BASE_PATH + GET, CardDto.class, id);
     }
 
     @Override
     public List<CardDto> getAll() {
-        return (List<CardDto>) restTemplate.getForEntity(GET_ALL, CardDto[].class);
+        CardDto[] response = restTemplate.getForEntity(BASE_PATH + GET_ALL, CardDto[].class).getBody();
+        return Arrays.asList(response);
     }
 
     @Override
     public void add(CardInstanceDto cardInstanceDto) {
-        restTemplate.postForEntity(ADD, cardInstanceDto, null);
+        restTemplate.postForEntity(BASE_PATH + ADD, cardInstanceDto, null);
     }
 
     @Override
-    public ResponseEntity<CardInstanceDto[]> generateCardsForNewUser(int idUser) {
-
-        LOG.info("[generateCardsForNewUser] idUser: " + idUser);
+    public ResponseEntity<List<CardInstanceDto>> generateCardsForNewUser(int idUser) {
         try {
             Map<String, Integer> map = new HashMap();
             map.put("idUser", idUser);
-            ResponseEntity<CardInstanceDto[]> data =  restTemplate.postForEntity("http://localhost" + REGISTER, null, CardInstanceDto[].class, map);
-            LOG.info("[generateCardsForNewUser] Status: " + data.getStatusCode());
-            return data;
+
+            ResponseEntity<CardInstanceDto[]> data =  restTemplate.postForEntity(BASE_PATH + REGISTER, null, CardInstanceDto[].class, map);
+
+            return ResponseEntity.ok(Arrays.asList(data.getBody()));
         } catch (Exception e) {
-            //TODO: handle exception
-            LOG.error("[generateCardsForNewUser]", e);
             return null;
         }
     }
