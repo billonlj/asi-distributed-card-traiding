@@ -3,7 +3,7 @@ package com.asi.service;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,14 +13,14 @@ import java.util.Optional;
 import com.asi.dto.CardInstanceDto;
 import com.asi.model.User;
 import com.asi.repository.UserRepository;
+import com.asi.rest.card.CardRestConsumer;
+import com.asi.rest.user.UserRestConsumer;
+
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -43,23 +43,10 @@ public class UserService {
 		// get five card 
 		//cardInstanceService.giveCardsToNewUser(user);
 		System.out.println("TODO: Give card to user !");
-		URL url;
 		try {
-			//url = new URL("http://localhost/api/cards/users/register/" + user.getIdUser());
-			//HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			//connection.setRequestProperty("accept", "application/json");
-			//connection.setRequestMethod("POST");
-			//InputStream responseStream = connection.getInputStream();
-			
-			RestTemplate restTemplate = new RestTemplate();
-			ResponseEntity<CardInstanceDto[]> response = restTemplate.getForEntity("http://localhost/api/cards/users/register/"+ user.getIdUser(),CardInstanceDto[].class);
-			CardInstanceDto[] cards = response.getBody();
-
-			if (cards.length != 0) { //responseStream) {
-				return true;
-			} else {
-				return false;
-			}
+			CardRestConsumer cardRestConsumer = new CardRestConsumer();
+			CardInstanceDto[] cards = cardRestConsumer.generateCardsForNewUser(user.getIdUser()).getBody();
+			return cards.length != 0;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

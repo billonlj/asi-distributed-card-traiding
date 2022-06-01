@@ -1,4 +1,4 @@
-package com.asi.dto;
+package com.asi.dto.user;
 
 public class BalanceUserDto {
 	public int idUser;
