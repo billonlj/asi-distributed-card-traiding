@@ -20,7 +20,7 @@ public class CardService {
 	CardRepository cardRepository;
 	
 	@Autowired
-	CardInstanceRepository cardinstanceRepository;
+	CardInstanceRepository cardInstanceRepository;
 	
 	private int numberOfCardThoGenerate = 5;
 	
@@ -29,6 +29,13 @@ public class CardService {
 		if (c.isPresent())
 			return c.get();
 		throw new RuntimeException("Ressource not found");
+	}
+	
+	public List<CardInstance> getCardsByUser(int idUser) {
+		Optional<List<CardInstance>> oCards = cardInstanceRepository.findByIdUser(idUser);
+		if (oCards.isPresent())
+			return oCards.get();
+		return new ArrayList<CardInstance>();
 	}
 	
 	public List<Card> getAll() {
@@ -56,9 +63,21 @@ public class CardService {
 		for (Card card : cards) {
 			CardInstance ci = convertCardToCardInstance(card);
 			ci.setIdUser(idUser);
-			cardsInstances.add(cardinstanceRepository.save(ci));
+			cardsInstances.add(cardInstanceRepository.save(ci));
 		}
 		return cardsInstances;
+	}
+
+	public CardInstance buyCard(CardInstance card) {
+		Optional<CardInstance> oCardToUpdate = cardInstanceRepository.findById(card.getIdInstance());
+
+		if (!oCardToUpdate.isPresent())
+			throw new RuntimeException("Card to buy don't exist");
+
+		CardInstance cardToUpdate = oCardToUpdate.get();
+
+		cardToUpdate.setIdUser(card.getIdUser());
+		return cardInstanceRepository.save(cardToUpdate);
 	}
 	
 	private CardInstance convertCardToCardInstance(Card card) {
