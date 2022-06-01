@@ -30,7 +30,14 @@ public class CardRestConsumer implements ICardRest{
     @Override
     public ResponseEntity<List<CardInstanceDto>> getCardInstanceList(@PathVariable Integer[] ids) {
     	try {
-    		ResponseEntity<CardInstanceDto[]> data = restTemplate.postForEntity(GET_CARD_FROM_INSTANCE, ids, CardInstanceDto[].class);
+            Map<String, String> map = new HashMap();
+            String s = new String();
+            for(Integer i: ids) {
+                s += i + ",";
+            }
+            s = s.substring(0, s.length() - 1);  
+            map.put("ids", s);
+    		ResponseEntity<CardInstanceDto[]> data = restTemplate.getForEntity(BASE_PATH + GET_CARD_FROM_INSTANCE, CardInstanceDto[].class, map);
     		return ResponseEntity.ok(Arrays.asList(data.getBody()));
     	} catch(Exception e) {
     		LOG.error("[getCardInstanceList]", e);

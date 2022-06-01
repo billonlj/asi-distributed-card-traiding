@@ -32,7 +32,7 @@ public class SaleService {
 		sales.sort(Comparator.comparing(Sale::getCardInstanceIdSale));
 		cards.sort(Comparator.comparing(CardInstanceDto::getIdInstance));
 		Map<Sale, CardInstanceDto> saleCardPairList = new HashMap<>();
-		for(int i = 0; i < sales.size(); i++) {
+		for(int i = 0; i < cards.size(); i++) {
 			saleCardPairList.put(sales.get(i), cards.get(i));
 		}
 		return saleCardPairList;
@@ -51,11 +51,12 @@ public class SaleService {
 	
 	public Map<Sale, CardInstanceDto> getAllSales() {
 		List<Sale> saleList = (List<Sale>) saleRepository.findAll();
-		List<Integer> cardInstanceIdList = saleList
+		Integer[] cardInstanceIdList = saleList
 			.stream()
-			.map(Sale::getCardInstanceIdSale)
-			.collect(Collectors.toList());
-		List<CardInstanceDto> cardInstanceDtoList = new ArrayList<CardInstanceDto>();//cardRestConsumer.getAll(cardInstanceIdList).body;		
+			.mapToInt(Sale::getCardInstanceIdSale)
+			.boxed()
+			.toArray( Integer[]::new );
+		List<CardInstanceDto> cardInstanceDtoList = cardRestConsumer.getCardInstanceList(cardInstanceIdList).getBody();
 		Map<Sale, CardInstanceDto> zippedSaleCardDto = zipSaleCardDto(saleList, cardInstanceDtoList);
 		return zippedSaleCardDto;
     }
