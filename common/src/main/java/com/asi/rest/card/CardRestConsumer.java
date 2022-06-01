@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
 public class CardRestConsumer implements ICardRest{
@@ -24,6 +25,17 @@ public class CardRestConsumer implements ICardRest{
     @Override
     public ResponseEntity<CardDto> get(int id) {
         return restTemplate.getForEntity(BASE_PATH + GET, CardDto.class, id);
+    }
+    
+    @Override
+    public ResponseEntity<CardInstanceDto[]> getCardInstanceList(@PathVariable Integer[] ids) {
+    	try {
+    		ResponseEntity<CardInstanceDto[]> data = restTemplate.postForEntity(GET_CARD_FROM_INSTANCE, ids, CardInstanceDto[].class);
+    		return data;
+    	} catch(Exception e) {
+    		LOG.error("[getCardInstanceList]", e);
+    		return null;
+    	}
     }
 
     @Override

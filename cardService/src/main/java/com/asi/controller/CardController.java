@@ -14,14 +14,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asi.dto.CardDto;
 import com.asi.dto.CardInstanceDto;
+import com.asi.dto.FamilyDto;
 import com.asi.model.Card;
 import com.asi.model.CardInstance;
+import com.asi.model.Family;
 import com.asi.rest.card.ICardRest;
 import com.asi.service.CardService;
 
@@ -29,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-// @RequestMapping(path = "/api/cards")
 public class CardController implements ICardRest {
 
 	private final static Logger LOG = LoggerFactory.getLogger(CardController.class);
@@ -42,7 +44,6 @@ public class CardController implements ICardRest {
 	
 
 	// Renvoie un template d'une carte
-	@GetMapping("/api/cards/{id}")
 	public ResponseEntity<CardDto> get(@PathVariable int id) {
 		Card c = cardService.getCard(id);
 		if (c == null)
@@ -59,6 +60,26 @@ public class CardController implements ICardRest {
 				.map(this::convertToCardDto)
 				.collect(Collectors.toList());
 	}
+	
+	// Retourne une CardDto à partir d'un id de CardInstance
+	@Override
+	public ResponseEntity<CardInstanceDto[]> getCardInstanceList(@PathVariable Integer[] ids) {
+		System.out.println(ids);
+		List<CardInstance> cards = cardService.getAllInstanceByIds(ids);
+		if (cards.isEmpty())
+			return ResponseEntity.internalServerError().build();
+		
+		CardInstanceDto[] cardInstanceDto = (CardInstanceDto[]) cards.stream()
+				.map(this::convertToCardInstanceDto)
+				.toArray();
+		
+		for (CardInstanceDto card : cardInstanceDto) {
+			card.setCard(convertToCardDto(cardService.getCard(card.getCardIdInstance())));
+		}
+		
+		return new ResponseEntity<CardInstanceDto[]>(cardInstanceDto , HttpStatus.OK);
+	}
+	
 	
   	@Override
 	public void add(CardInstanceDto cardInstanceDto) {
@@ -115,14 +136,14 @@ public class CardController implements ICardRest {
 	// Convertie une Card en une CardDto
 	private CardDto convertToCardDto(Card card) {
 		CardDto cardDto = modelMapper.map(card, CardDto.class);
-		cardDto.setFamilyCard(card.getFamilyCard().getNameFamily());
+		cardDto.setFamilyCardDto(convertToFamilyDto(card.getFamilyCard()));
 		return cardDto;
 	}
 	
 	// Convertie une CardInstance en CardInstanceDto
 	private CardInstanceDto convertToCardInstanceDto(CardInstance cardInstance) {
 		CardInstanceDto cardInstanceDto = modelMapper.map(cardInstance, CardInstanceDto.class);
-		cardInstanceDto.setCardInstance(cardInstance.getCardInstance().getIdCard());
+		cardInstanceDto.setCardIdInstance(cardInstance.getCardInstance().getIdCard());
 		return cardInstanceDto;
 	}
 	
@@ -135,8 +156,14 @@ public class CardController implements ICardRest {
 	// Convertie une CardInstanceDto en une CardInstance
 	private CardInstance convertToCardInstanceModel(CardInstanceDto cardInstanceDto) {
 		CardInstance cardInstance = modelMapper.map(cardInstanceDto, CardInstance.class);
-		cardInstance.setCardInstance(cardService.getCard(cardInstanceDto.getCardInstance()));
+		cardInstance.setCardInstance(cardService.getCard(cardInstanceDto.getCardIdInstance()));
 		return cardInstance;
+	}
+	
+	// Convertie une Family en une FamilyDto
+	private FamilyDto convertToFamilyDto(Family family) {
+		FamilyDto familyDto = modelMapper.map(family, FamilyDto.class);
+		return familyDto;
 	}
 
 	@PostConstruct
