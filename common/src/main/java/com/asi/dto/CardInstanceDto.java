@@ -10,6 +10,9 @@ public class CardInstanceDto {
 	private int attackinstance;
 	private int defenceInstance;
 	
+	public CardInstanceDto () {
+	}
+
 	public int getIdInstance() {
 		return idInstance;
 	}
