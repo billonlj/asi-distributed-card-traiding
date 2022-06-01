@@ -2,7 +2,8 @@ package com.asi.dto;
 
 public class CardInstanceDto {
 	private int idInstance;
-	private int cardInstance;
+	private int cardIdInstance;
+	private CardDto card;
 	private int iduser;
 	private int energyInstance;
 	private int hpInstance;
@@ -15,11 +16,11 @@ public class CardInstanceDto {
 	public void setIdInstance(int idInstance) {
 		this.idInstance = idInstance;
 	}
-	public int getCardInstance() {
-		return cardInstance;
+	public int getCardIdInstance() {
+		return cardIdInstance;
 	}
-	public void setCardInstance(int cardInstance) {
-		this.cardInstance = cardInstance;
+	public void setCardIdInstance(int cardInstance) {
+		this.cardIdInstance = cardInstance;
 	}
 	public int getIduser() {
 		return iduser;
@@ -51,6 +52,10 @@ public class CardInstanceDto {
 	public void setDefenceInstance(int defenceInstance) {
 		this.defenceInstance = defenceInstance;
 	}
-	
-	
+	public CardDto getCard() {
+		return card;
+	}
+	public void setCard(CardDto cardInstance) {
+		this.card = cardInstance;
+	}
 }
