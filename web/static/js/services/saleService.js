@@ -24,7 +24,7 @@ export default {
     },
     async getSellableCards() {
         try {
-            const response = await API.get('/sales');
+            const response = await API.get('/sales/');
             return response.data;
         } catch (error) {
             return [];  

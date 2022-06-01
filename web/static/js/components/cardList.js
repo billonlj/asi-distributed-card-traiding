@@ -65,11 +65,12 @@ class CardList extends HTMLBindableElement {
 		const container = this.querySelector('#tableContent');
 		const template = this.querySelector('#row');
 
-		this.cards.forEach(cardInstance => {
-			const clone = document.importNode(template.content, true);
-			const cardClone = { ...cardInstance };
+		this.cards.forEach(wrapper => {
+            const cardInstance = this.isSell ? wrapper : wrapper.cardInstance;
             const card = cardInstance.card;
-            //const cardDescription = card.cardInstance !== undefined ? card.cardInstance : card.card; 
+
+			const clone = document.importNode(template.content, true);
+
             const newContent = clone.firstElementChild.innerHTML
                 .replace(/{{family_src}}/g, card.affinityCard)
                 .replace(/{{family_name}}/g, card.familyCardDto?.nameFamily)
@@ -81,10 +82,11 @@ class CardList extends HTMLBindableElement {
 				.replace(/{{attack}}/g, cardInstance.attackinstance)
 				.replace(/{{defense}}/g, cardInstance.defenceInstance)
 				.replace(/{{price}}/g, card.priceSale)
+            
 			clone.firstElementChild.innerHTML = newContent;
 			container.appendChild(clone);
 			const trigger = container.lastElementChild.querySelector(".trigger");
-			trigger.addEventListener('click', () => { this.onButtonClick(cardClone) });
+			trigger.addEventListener('click', () => { this.onButtonClick({ ...wrapper }) });
 		});
 	}
 
