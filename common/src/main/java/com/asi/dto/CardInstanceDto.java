@@ -9,6 +9,16 @@ public class CardInstanceDto {
 	private int attackinstance;
 	private int defenceInstance;
 	
+	public CardInstanceDto (int idInstance,int cardInstance,int iduser,int energyInstance,int hpInstance,int attackinstance,int defenceInstance) {
+		this.idInstance = idInstance;
+		this.cardInstance = cardInstance;
+		this.iduser = iduser;
+		this.energyInstance = energyInstance;
+		this.hpInstance = hpInstance;
+		this.attackinstance = attackinstance;
+		this.defenceInstance = defenceInstance;
+	}
+
 	public int getIdInstance() {
 		return idInstance;
 	}
