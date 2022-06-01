@@ -25,12 +25,14 @@ public class Sale {
 	@CreationTimestamp
 	private Date dateSale;
 
-
-	public Sale(int idSale, int userIdSale, int cardInstanceIdSale, double priceSale) {
-		this.idSale = idSale;
+	
+	public Sale(int userIdSale, int cardInstanceIdSale, double priceSale) {
 		this.userIdSale = userIdSale;
 		this.cardInstanceIdSale = cardInstanceIdSale;
 		this.priceSale = priceSale;
+	}
+
+	public Sale() {
 	}
 
 	public int getIdSale() {

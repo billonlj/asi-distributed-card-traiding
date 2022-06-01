@@ -64,7 +64,6 @@ public class CardController implements ICardRest {
 	// Retourne une CardDto à partir d'un id de CardInstance
 	@Override
 	public ResponseEntity<List<CardInstanceDto>> getCardInstanceList(@PathVariable Integer[] ids) {
-		System.out.println(ids);
 		List<CardInstance> cards = cardService.getAllInstanceByIds(ids);
 		if (cards.isEmpty())
 			return ResponseEntity.internalServerError().build();
