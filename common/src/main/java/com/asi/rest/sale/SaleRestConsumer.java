@@ -5,28 +5,38 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.http.ResponseEntity;
+import com.asi.rest.sale.ISaleRest;
+import com.asi.dto.SaleDto;
 import com.asi.dto.SaleTransactionDto;
 
 public class SaleRestConsumer implements ISaleRest {
     
-	@Autowired
-	private RestTemplate restTemplate;
+	private final static Logger LOG = LoggerFactory.getLogger(SaleRestConsumer.class);
 
+	private RestTemplate restTemplate = new RestTemplate();
+	
 	@Override
-	public int buyCard(SaleTransactionDto saleDto) {
-		restTemplate.postForEntity(BASE_PATH + BUY, saleDto, null);
-		return 0;
+	public List<SaleDto> getAll() {
+		return (List<SaleDto>) restTemplate.getForEntity(GET_ALL, SaleDto[].class);
 	}
 
 	@Override
-	public int sellCard(SaleTransactionDto saleDto) {
-		restTemplate.postForEntity(BASE_PATH + SELL, saleDto, null);
-		return 0;
+	public void buyCard(SaleTransactionDto saleDto) {
+		restTemplate.postForEntity(BUY, saleDto, null);		
 	}
 
 	@Override
-	public List<SaleTransactionDto> get() {
-		// TODO Auto-generated method stub
-		return null;
+	public void sellCard(SaleTransactionDto saleDto) {
+		restTemplate.postForEntity(SELL, saleDto, null);
 	}
+
 }
