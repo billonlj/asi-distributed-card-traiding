@@ -1,5 +1,6 @@
 package com.asi.controller;
 
+import com.asi.dto.RoomDto;
 import com.asi.model.Room;
 import com.asi.service.GameService;
 import com.asi.utils.SseHandler;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -44,8 +46,8 @@ public class GameController {
     }
 
     @PostMapping("/api/rooms")
-    public Room createRoom() {
-        return gameService.createRoom();
+    public Room createRoom(@RequestBody RoomDto roomDto) {
+        return gameService.createRoom(roomDto);
     }
 
 

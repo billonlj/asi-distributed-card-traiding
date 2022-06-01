@@ -1,5 +1,6 @@
 package com.asi.service;
 
+import com.asi.dto.RoomDto;
 import com.asi.model.Room;
 import com.asi.utils.SseHandler;
 
@@ -13,9 +14,12 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public class GameService {
+    private final static Logger LOG = LoggerFactory.getLogger(GameService.class);
+
     Map<Integer, Room> rooms = new HashMap<Integer, Room>();
     SseHandler roomsHandler = new SseHandler();
 
@@ -52,9 +56,9 @@ public class GameService {
         return rooms.values();
     }
 
-    public Room createRoom() {
+    public Room createRoom(RoomDto room) {
         Integer size = rooms.size();
-        Room newRoom = new Room(size);
+        Room newRoom = new Room(size, room.getNameRoom());
         System.out.println("Create room: " + size);
         rooms.put(size, newRoom);
         dispatchrooms();
