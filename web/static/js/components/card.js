@@ -7,7 +7,8 @@ class FullCard extends HTMLBindableElement {
 
         if(card) {
             this.card = card;
-            this.cardDescription = card.cardInstance !== undefined ? card.cardInstance : card.card; 
+            this.cardInstance = card.cardInstance !== undefined ? card.cardInstance : card; 
+            //this.cardDescription = card.cardInstance !== undefined ? card.cardInstance : card.card; 
         }
         
         this.isSell = isSell;
@@ -62,9 +63,9 @@ class FullCard extends HTMLBindableElement {
                             </div>
                             <div class="ui fluid image">
                                 <a class="ui left corner label">
-                                    ${this.cardDescription.nameCard}
+                                    ${this.cardInstance.card.nameCard}
                                 </a>
-                                <img id="cardImgId" class="ui centered image" src="${this.cardDescription.sourceUrlCard}">
+                                <img id="cardImgId" class="ui centered image" src="${this.cardInstance.card.sourceUrlCard}">
                             </div>
                         </div>
                     </div>
@@ -72,26 +73,26 @@ class FullCard extends HTMLBindableElement {
                         <div class="ui form tiny">
                             <div class="field">
                                 <label id="cardNameId"></label>
-                                <textarea id="cardDescriptionId" class="overflowHiden" readonly="" rows="2">${this.cardDescription.descriptionCard}
+                                <textarea id="cardDescriptionId" class="overflowHiden" readonly="" rows="2">${this.cardInstance.card.descriptionCard}
                                 </textarea>
                             </div>
                         </div>
                     </div>
                     <div class="content">
-                        <i class="heart outline icon"></i><span id="cardHPId"> HP ${this.cardDescription.hpCard}</span>
+                        <i class="heart outline icon"></i><span id="cardHPId"> HP ${this.cardInstance.hpInstance}</span>
                         <div class="right floated ">
-                            <span id="cardEnergyId">Energy ${this.cardDescription.energyCard}'</span>
+                            <span id="cardEnergyId">Energy ${this.cardInstance.energyInstance}'</span>
                             <i class="lightning icon"></i>
             
                         </div>
                     </div>
                     <div class="content">
                         <span class="right floated">
-                            <span id="cardAttackId"> Attack ${this.cardDescription.attackCard}</span>
+                            <span id="cardAttackId"> Attack ${this.cardInstance.attackinstance}</span>
                             <i class=" wizard icon"></i>
                         </span>
                         <i class="protect icon"></i>
-                        <span id="cardDefenceId">Defense ${this.cardDescription.defenceCard}</span>
+                        <span id="cardDefenceId">Defense ${this.cardInstance.defenceInstance}</span>
                     </div>
                     <div class="field">
                         <div class="ui left icon input" id="sellButton">
@@ -121,7 +122,8 @@ class FullCard extends HTMLBindableElement {
 
     setCard(newCard) {
         this.card = newCard;
-		this.cardDescription = newCard.cardInstance !== undefined ? newCard.cardInstance : newCard.card;
+        this.cardInstance = card.cardInstance;
+		//this.cardDescription = newCard.cardInstance !== undefined ? newCard.cardInstance : newCard.card;
         this.render();
     }  
 }

@@ -10,6 +10,7 @@ public class CardDto {
 	private String affinityCard;
 	private int energyCard;
 	private FamilyDto familyCardDto;
+	private String sourceUrlCard;
 	
 	public int getIdCard() {
 		return idCard;
@@ -47,6 +48,11 @@ public class CardDto {
 	public void setFamilyCardDto(FamilyDto familyCardDto) {
 		this.familyCardDto = familyCardDto;
 	}
-	
+	public String getSourceUrlCard() {
+		return sourceUrlCard;
+	}
+	public void setSourceUrlCard(String sourceUrlCard) {
+		this.sourceUrlCard = sourceUrlCard;
+	}
 	
 }

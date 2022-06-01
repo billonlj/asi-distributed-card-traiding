@@ -52,5 +52,4 @@ public class CardInstanceDto {
 		this.defenceInstance = defenceInstance;
 	}
 	
-	
 }
