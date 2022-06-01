@@ -37,6 +37,17 @@ public class CardRestConsumer implements ICardRest{
     		return null;
     	}
     }
+    
+    @Override
+    public ResponseEntity<CardInstanceDto[]> getCardInstanceList(@PathVariable Integer[] ids) {
+    	try {
+    		ResponseEntity<CardInstanceDto[]> data = restTemplate.postForEntity(GET_CARD_FROM_INSTANCE, ids, CardInstanceDto[].class);
+    		return data;
+    	} catch(Exception e) {
+    		LOG.error("[getCardInstanceList]", e);
+    		return null;
+    	}
+    }
 
     @Override
     public List<CardDto> getAll() {

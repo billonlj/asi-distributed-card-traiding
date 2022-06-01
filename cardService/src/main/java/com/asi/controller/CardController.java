@@ -53,7 +53,7 @@ public class CardController implements ICardRest {
 	
 	
 	// Renvoie toutes les cartes existantes dans le jeu
-  	@Override
+	@Override
 	public List<CardDto> getAll() {
 		List<Card> cards = cardService.getAll();
 		return cards.stream()
