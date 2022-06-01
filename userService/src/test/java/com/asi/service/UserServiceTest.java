@@ -103,5 +103,11 @@ class UserServiceTest {
         Assertions.assertThat(userService.changeMoneyOfUser(user,-100)).isFalse();
     }
 
+    @Test
+    void testChangeMoneyOfUser() {
+        User user = new User(1, "TestName", "TestSurname", "TestEmail", 200, "pwd");
+        Assertions.assertThat(userService.changeMoneyOfUser(user,-100)).isTrue();
+    }
+
 }
 
