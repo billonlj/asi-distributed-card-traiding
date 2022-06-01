@@ -44,9 +44,11 @@ public class CardRestConsumer implements ICardRest{
             map.put("idUser", idUser);
 
             ResponseEntity<CardInstanceDto[]> data =  restTemplate.postForEntity(BASE_PATH + REGISTER, null, CardInstanceDto[].class, map);
+            LOG.info("[generateCardsForNewUser] ", data.toString());
 
             return ResponseEntity.ok(Arrays.asList(data.getBody()));
         } catch (Exception e) {
+            LOG.error(e.toString());
             return null;
         }
     }

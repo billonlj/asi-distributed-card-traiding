@@ -21,6 +21,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -45,8 +46,8 @@ public class UserService {
 		System.out.println("TODO: Give card to user !");
 		try {
 			CardRestConsumer cardRestConsumer = new CardRestConsumer();
-			CardInstanceDto[] cards = cardRestConsumer.generateCardsForNewUser(user.getIdUser()).getBody();
-			return cards.length != 0;
+			List<CardInstanceDto> cards = cardRestConsumer.generateCardsForNewUser(user.getIdUser()).getBody();
+			return cards.size() != 0;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

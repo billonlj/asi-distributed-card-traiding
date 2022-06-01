@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-@RequestMapping(path = "/api/cards")
+// @RequestMapping(path = "/api/cards")
 public class CardController implements ICardRest {
 
 	private final static Logger LOG = LoggerFactory.getLogger(CardController.class);
@@ -42,7 +42,7 @@ public class CardController implements ICardRest {
 	
 
 	// Renvoie un template d'une carte
-	@GetMapping("/{id}")
+	@GetMapping("/api/cards/{id}")
 	public ResponseEntity<CardDto> get(@PathVariable int id) {
 		Card c = cardService.getCard(id);
 		if (c == null)
@@ -52,8 +52,7 @@ public class CardController implements ICardRest {
 	
 	
 	// Renvoie toutes les cartes existantes dans le jeu
-  @Override
-	@GetMapping("/")
+  	@Override
 	public List<CardDto> getAll() {
 		List<Card> cards = cardService.getAll();
 		return cards.stream()
@@ -61,14 +60,13 @@ public class CardController implements ICardRest {
 				.collect(Collectors.toList());
 	}
 	
-  @Override
-	@PostMapping("/users/")
+  	@Override
 	public void add(CardInstanceDto cardInstanceDto) {
 		CardInstance cardInstance = convertToCardInstanceModel(cardInstanceDto);
 	}
 
 	//
-	@PutMapping("/users/")
+	@PutMapping("/api/cards/users/")
 	public ResponseEntity<CardInstanceDto> buyCard(CardInstanceDto cardInstanceDto) {
 		CardInstance cardInstance = convertToCardInstanceModel(cardInstanceDto);
 		
@@ -79,7 +77,7 @@ public class CardController implements ICardRest {
 		return new ResponseEntity<CardInstanceDto>(convertToCardInstanceDto(boughtCard), HttpStatus.OK);
 	}
 	
-  // Génère 5 cartes aléatoires pour un utilisateur qui s'inscrit
+  	// Génère 5 cartes aléatoires pour un utilisateur qui s'inscrit
 	@Override
 	public ResponseEntity<List<CardInstanceDto>> generateCardsForNewUser(@PathVariable int idUser) {
 		LOG.info("[CardController] generateCardsForNewUser");
@@ -98,7 +96,7 @@ public class CardController implements ICardRest {
 	}
 	
 	// Retourne toutes les cartes d'un utilisateur
-	@GetMapping("/users/{idUser}")
+	@GetMapping("/api/cards/users/{idUser}")
 	public ResponseEntity<List<CardInstanceDto>> getAllCardForOneUser(@PathVariable int idUser) {
 		// On ignore les propriétés sources qui peuvent matcher plusieurs propriétés des champs du DTO
 		List<CardInstance> cardInstances = cardService.getCardsByUser(idUser);
