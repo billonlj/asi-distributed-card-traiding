@@ -42,6 +42,20 @@ public class Card {
 		this.energyCard = energyCard;
 	}
 
+	public Card(int idCard, String affinityCard, String descriptionCard, int energyCard, String nameCard, Family familyCard, int attackCard, int hpCard, int defenceCard, String sourceUrlCard) {
+		super();
+		this.idCard = idCard;
+		this.affinityCard = affinityCard;
+		this.descriptionCard = descriptionCard;
+		this.energyCard = energyCard;
+		this.nameCard = nameCard;
+		this.familyCard = familyCard;
+		this.attackCard = attackCard;
+		this.hpCard = hpCard;
+		this.defenceCard = defenceCard;
+		this.sourceUrlCard = sourceUrlCard;
+	}
+
 	public int getIdCard() {
 		return idCard;
 	}
