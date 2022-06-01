@@ -68,18 +68,18 @@ class CardList extends HTMLBindableElement {
 		this.cards.forEach(card => {
 			const clone = document.importNode(template.content, true);
 			const cardClone = { ...card };
-
-            const cardDescription = card.cardInstance !== undefined ? card.cardInstance : card.card; 
+            const cardInstance = card.cardInstance;
+            //const cardDescription = card.cardInstance !== undefined ? card.cardInstance : card.card; 
             const newContent = clone.firstElementChild.innerHTML
-                .replace(/{{family_src}}/g, card.family_src)
-                .replace(/{{family_name}}/g, cardDescription.familyCard.nameFamily)
-                .replace(/{{img_src}}/g, cardDescription.sourceUrlCard)
-                .replace(/{{name}}/g, cardDescription.nameCard)
-				.replace(/{{description}}/g, cardDescription.descriptionCard)
-				.replace(/{{hp}}/g, cardDescription.hpCard)
-				.replace(/{{energy}}/g, cardDescription.energyCard)
-				.replace(/{{attack}}/g, cardDescription.attackCard)
-				.replace(/{{defense}}/g, cardDescription.defenceCard)
+                .replace(/{{family_src}}/g, cardInstance.card.family_src)
+                .replace(/{{family_name}}/g, cardInstance.card.familyCard.nameFamily)
+                .replace(/{{img_src}}/g, cardInstance.card.sourceUrlCard)
+                .replace(/{{name}}/g, cardInstance.card.nameCard)
+				.replace(/{{description}}/g, cardInstance.card.descriptionCard)
+				.replace(/{{hp}}/g, cardInstance.hpInstance)
+				.replace(/{{energy}}/g, cardInstance.energyInstance)
+				.replace(/{{attack}}/g, cardInstance.attackinstance)
+				.replace(/{{defense}}/g, cardInstance.defenceInstance)
 				.replace(/{{price}}/g, card.priceSale)
 			clone.firstElementChild.innerHTML = newContent;
 			container.appendChild(clone);
