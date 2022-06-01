@@ -1,6 +1,7 @@
 package com.asi.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -12,6 +13,7 @@ import com.asi.model.Card;
 import com.asi.model.CardInstance;
 import com.asi.repository.CardInstanceRepository;
 import com.asi.repository.CardRepository;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 @Service
 public class CardService {
@@ -40,6 +42,13 @@ public class CardService {
 	
 	public List<Card> getAll() {
 		List<Card> cards = (ArrayList<Card>) cardRepository.findAll();
+		return cards;
+	}
+	
+	public List<CardInstance> getAllInstanceByIds(Integer[] ids) {
+		List<CardInstance> cards = new ArrayList<CardInstance>(); 
+		cardInstanceRepository.findAllById(Arrays.asList(ids)).forEach(cards::add);
+		
 		return cards;
 	}
 	
