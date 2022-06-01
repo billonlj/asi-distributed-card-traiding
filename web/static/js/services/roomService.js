@@ -1,7 +1,7 @@
 import Store from "../utils/store.js";
 import API from "../utils/axios.js";
 
-const baseUrl = "http://localhost:8080/api/rooms/sse";
+const baseUrl = "http://localhost/api/rooms/sse";
 
 const getHeaders = () => ({
     headers: {

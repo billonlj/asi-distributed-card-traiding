@@ -47,6 +47,11 @@ services:
     networks:
       - user-service-network
       - general-network
+  
+  game-service:
+    build: gameService/
+    networks:
+      - general-network
 
   reverse-proxy:
     build: reverse-proxy/
