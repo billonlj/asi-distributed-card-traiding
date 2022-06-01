@@ -7,6 +7,7 @@ import com.asi.dto.user.BalanceUserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public interface IUserRest extends IRest {
@@ -19,6 +20,6 @@ public interface IUserRest extends IRest {
     @RequestMapping(PROFILE)
     public ResponseEntity<UserDto> getUserProfile();
 
-    @RequestMapping(value = BALANCE, method=RequestMethod.POST, produces = "application/json")
-	public ResponseEntity<String> balanceUserMoney(@RequestBody BalanceUserDto userDto);
+    @PostMapping(BALANCE)
+	public ResponseEntity<Boolean> balanceUserMoney(@RequestBody BalanceUserDto userDto);
 }

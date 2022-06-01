@@ -71,5 +71,19 @@ public class CardRestConsumer implements ICardRest{
             return null;
         }
     }
+
+    @Override
+	public ResponseEntity<Boolean> buyCard(Integer idCardInstance, Integer idUser) {
+        Map<String, Integer> map = new HashMap();
+        map.put("idUser", idUser);
+        map.put("idCardInstance", idCardInstance);
+		return restTemplate.postForEntity(BASE_PATH + BUY, null, Boolean.class, map);
+	}
+	@Override
+	public ResponseEntity<Boolean> sellCard(Integer idCardInstance) {
+        Map<String, Integer> map = new HashMap();
+        map.put("idCardInstance", idCardInstance);
+		return restTemplate.postForEntity(BASE_PATH + SELL, null, Boolean.class, map);
+	}
     
 }

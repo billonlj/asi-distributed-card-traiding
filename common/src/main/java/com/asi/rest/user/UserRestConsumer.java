@@ -18,7 +18,7 @@ public class UserRestConsumer implements IUserRest {
     }
 
     @Override
-    public ResponseEntity<String> balanceUserMoney(BalanceUserDto userDto) {
-        return restTemplate.postForEntity(BASE_PATH + BALANCE, userDto, String.class);
+    public ResponseEntity<Boolean> balanceUserMoney(BalanceUserDto userDto) {
+        return restTemplate.postForEntity(BASE_PATH + BALANCE, userDto, Boolean.class);
     }
 }

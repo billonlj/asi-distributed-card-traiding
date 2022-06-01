@@ -86,15 +86,13 @@ public class CardController implements ICardRest {
 	}
 
 	//
-	@PutMapping("/api/cards/users/")
-	public ResponseEntity<CardInstanceDto> buyCard(CardInstanceDto cardInstanceDto) {
-		CardInstance cardInstance = convertToCardInstanceModel(cardInstanceDto);
-		
-		CardInstance boughtCard = cardService.buyCard(cardInstance);
-		if (boughtCard == null)
-			return ResponseEntity.internalServerError().build();
-		
-		return new ResponseEntity<CardInstanceDto>(convertToCardInstanceDto(boughtCard), HttpStatus.OK);
+	@Override
+	public ResponseEntity<Boolean> buyCard(@PathVariable Integer idCardInstance, @PathVariable Integer idUser) {
+		return new ResponseEntity<Boolean>(cardService.buyCard(idCardInstance, idUser), HttpStatus.OK);
+	}
+	@Override
+	public ResponseEntity<Boolean> sellCard(@PathVariable Integer idCardInstance) {
+		return new ResponseEntity<Boolean>(cardService.sellCard(idCardInstance), HttpStatus.OK);
 	}
 	
   	// Génère 5 cartes aléatoires pour un utilisateur qui s'inscrit

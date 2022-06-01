@@ -22,6 +22,8 @@ public interface ICardRest extends IRest {
 	
 	public final String ADD = ROOT_PATH + "/users/";
 	public final String REGISTER = ROOT_PATH + "/users/register/{idUser}";
+	public final String BUY = ROOT_PATH + "/users/buy/{idCardInstance}/{idUser}";
+	public final String SELL = ROOT_PATH + "/users/sell/{idCardInstance}";
 	
 
 
@@ -39,4 +41,9 @@ public interface ICardRest extends IRest {
 
     @PostMapping(REGISTER)
 	public ResponseEntity<List<CardInstanceDto>> generateCardsForNewUser(@PathVariable int idUser);
+
+	@PostMapping(BUY)
+	public ResponseEntity<Boolean> buyCard(@PathVariable Integer idCardInstance, @PathVariable Integer idUser);
+	@PostMapping(SELL)
+	public ResponseEntity<Boolean> sellCard(@PathVariable Integer idCardInstance);
 }

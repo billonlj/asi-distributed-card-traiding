@@ -89,15 +89,15 @@ public class UserController implements IUserRest {
 	
 	@Override
 	@ResponseBody
-	public ResponseEntity<String> balanceUserMoney(@RequestBody BalanceUserDto userDto) {
+	public ResponseEntity<Boolean> balanceUserMoney(@RequestBody BalanceUserDto userDto) {
 		User user = userService.getUserById(userDto.getIdUser());
 		
 		Boolean isMoneyChange = userService.changeMoneyOfUser(user, userDto.getBalanceMoney());
 		
 	    if (isMoneyChange) {
-	    	return new ResponseEntity<String>("Money has changed", HttpStatus.OK);
+	    	return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	    } else {
-	    	return new ResponseEntity<String>("An error as occured :  the user's money has not changed", HttpStatus.BAD_REQUEST);
+	    	return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
 	    }
 	}
 	

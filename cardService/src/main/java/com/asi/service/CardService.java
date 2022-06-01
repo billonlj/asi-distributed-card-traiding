@@ -84,16 +84,25 @@ public class CardService {
 		return cardsInstances;
 	}
 
-	public CardInstance buyCard(CardInstance card) {
-		Optional<CardInstance> oCardToUpdate = cardInstanceRepository.findById(card.getIdInstance());
-
-		if (!oCardToUpdate.isPresent())
-			throw new RuntimeException("Card to buy don't exist");
-
-		CardInstance cardToUpdate = oCardToUpdate.get();
-
-		cardToUpdate.setIdUser(card.getIdUser());
-		return cardInstanceRepository.save(cardToUpdate);
+	public Boolean buyCard(Integer idCardInstance, Integer idUser) {
+		try {
+			CardInstance card = cardInstanceRepository.findById(idCardInstance).get();
+			card.setIdUser(idUser);
+			cardInstanceRepository.save(card);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	public Boolean sellCard(Integer idCardInstance) {
+		try {
+			CardInstance card = cardInstanceRepository.findById(idCardInstance).get();
+			card.setIdUser(-1);
+			cardInstanceRepository.save(card);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	private CardInstance convertCardToCardInstance(Card card) {

@@ -15,6 +15,8 @@ import com.asi.model.Sale;
 import com.asi.repository.SaleRepository;
 
 import com.asi.dto.CardInstanceDto;
+import com.asi.dto.user.BalanceUserDto;
+import com.asi.dto.user.UserDto;
 import com.asi.rest.card.CardRestConsumer;
 import com.asi.rest.user.UserRestConsumer;
 
@@ -36,17 +38,6 @@ public class SaleService {
 			saleCardPairList.put(sales.get(i), cards.get(i));
 		}
 		return saleCardPairList;
-	}
-	
-	public Map<Sale, CardInstanceDto> getSale(int id) {
-		Optional<Sale> sale = saleRepository.findById(id);
-		if (sale.isPresent()) {
-			CardInstanceDto cardInstanceDto = null;//cardRestConsumer.get(sale.get().getCardInstanceIdSale()).body;
-			Map<Sale, CardInstanceDto> saleCardPair = new HashMap<>(Map.of(sale.get(), cardInstanceDto));
-			return saleCardPair;
-		} else {
-			return null;
-		}
 	}
 	
 	public Map<Sale, CardInstanceDto> getAllSales() {
@@ -93,43 +84,47 @@ public class SaleService {
 		//cardInstanceRepository.save(cardId);
 	}
 	
-	//TODO remove test sur User et use getCurrentUser() + utiliser des exceptions
-	public int buy(int idSale, int idUser) {
-		// Optional<BalancerUserDto> buyer = userRepository.findById(idUser);
-		// Optional<SaleDto> sale = saleRepository.findById(idSale);
-		//
-		//if(!buyer.isPresent()) {
-		//	return 500;
-		//}
-		//if(!sale.isPresent()) {
-		//	return 500;
-		//}
-		////check si argent user suffisant
-		//if(sale.get().getPriceSale() > buyer.get().getMoneyUser()) {
-		//	return 500;
-		//}
-		//buyTransaction(buyer.get(), sale.get());
-		return 200;
+	public boolean buy(int idSale, int idUser) {
+		
+		Optional<Sale> saleOpt = saleRepository.findById(idSale);
+		if(!saleOpt.isPresent()) {
+			return false;
+		}
+		Sale sale = saleOpt.get();
+
+		BalanceUserDto buyer = new BalanceUserDto();
+		buyer.setBalanceMoney(-sale.getPriceSale());
+		buyer.setIdUser(idUser);
+
+		BalanceUserDto seller = new BalanceUserDto();
+		seller.setBalanceMoney(sale.getPriceSale());
+		seller.setIdUser(sale.getUserIdSale());
+
+		try {
+			Boolean buyHappened = userRestConsumer.balanceUserMoney(buyer).getBody();
+			Boolean sellHappened = userRestConsumer.balanceUserMoney(seller).getBody();
+			
+			Boolean res = cardRestConsumer.buyCard(Integer.valueOf(sale.getCardInstanceIdSale()), Integer.valueOf(buyer.getIdUser())).getBody();
+			saleRepository.delete(sale);
+			return buyHappened && sellHappened && res;
+		} catch (Exception e) {
+			System.out.println("_______________________________\n");
+			e.printStackTrace();
+			System.out.println("_______________________________\n");
+			return false;
+		}
 		
 	}
 	
 	//TODO remove test sur User et use getCurrentUser() + utiliser des exceptions
-	public int sell(int idUser, int idCardInstance, double price) {
-		//checkout si user & sale existe
-		//Optional<User> seller = userRepository.findById(idUser);
-		//Optional<CardInstance> card = cardInstanceRepository.findById(idCardInstance);
-		//if(!seller.isPresent()) {
-		//	return 500;
-		//}
-		//if(!card.isPresent()) {
-		//	return 500;
-		//}
-		////check user has the card
-		//if(1 == 0) {
-		//	return 500;
-		//}
-		//createOfferTransaction(seller.get(), card.get(), price);
-		return 200;
+	public boolean sell(int idUser, int idCardInstance, double price) {
+		Boolean res = cardRestConsumer.sellCard(Integer.valueOf(idCardInstance)).getBody();
+		Sale s = new Sale();
+		s.setCardInstanceIdSale(idCardInstance);
+		s.setUserIdSale(idUser);
+		s.setPriceSale(price);
+		saleRepository.save(s);
+		return res;
 			
 	}
 }
