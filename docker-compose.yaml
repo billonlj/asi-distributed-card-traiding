@@ -11,8 +11,9 @@ services:
     networks:
       - card-service-network
 
-  card-services:
+  card-service:
     build: cardService/
+    container_name: card-service
     depends_on:
       - "card-db"
     environment:
@@ -37,6 +38,7 @@ services:
 
   user-service:
     build: userService/
+    container_name: user-service
     depends_on:
       - "user-db"
     environment:
@@ -48,13 +50,41 @@ services:
       - user-service-network
       - general-network
 
+  sale-db:
+    image: postgres:14-alpine
+    container_name: sale-db
+    restart: always
+    environment:
+      POSTGRES_USER: login
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: bd
+    networks:
+      - sale-service-network
+
+  sale-service:
+    build: saleService/
+    container_name: sale-service
+    depends_on:
+      - "sale-db"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://sale-db:5432/bd
+      - SPRING_DATASOURCE_USERNAME=login
+      - SPRING_DATASOURCE_PASSWORD=pwd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - sale-service-network
+      - general-network
+
   reverse-proxy:
     build: reverse-proxy/
+    container_name: reverse-proxy
     restart: always
     ports:
       - "80:80"
     depends_on:
-      - "card-services"
+      - "card-service"
+      - "user-service"
+      - "sale-service"
       - "static"
     networks:
       - general-network
@@ -68,4 +98,5 @@ services:
 networks:
   card-service-network:
   user-service-network:
+  sale-service-network:
   general-network:

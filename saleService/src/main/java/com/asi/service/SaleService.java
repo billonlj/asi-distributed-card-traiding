@@ -1,5 +1,6 @@
 package com.asi.service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,6 @@ public class SaleService {
 	
 	private Map<Sale, CardInstanceDto> zipSaleCardDto(List<Sale> sales, List<CardInstanceDto> cards) {
 		// On sort avant pour pouvoir matcher l'ordre d'index de la liste et l'ordre des id de cartes
-		//Collections.sort(sales, (a, b) - > a.getCardInstanceIdSale().compareTo(b.getCardInstanceIdSale()));
-		//Collections.sort(cards, (a, b) - > a.getIdInstance().compareTo(b.getIdInstance()));
 		sales.sort(Comparator.comparing(Sale::getCardInstanceIdSale));
 		cards.sort(Comparator.comparing(CardInstanceDto::getIdInstance));
 		Map<Sale, CardInstanceDto> saleCardPairList = new HashMap<>();
@@ -56,7 +55,7 @@ public class SaleService {
 			.stream()
 			.map(Sale::getCardInstanceIdSale)
 			.collect(Collectors.toList());
-		List<CardInstanceDto> cardInstanceDtoList = null;//cardRestConsumer.getAll(cardInstanceIdList).body;		
+		List<CardInstanceDto> cardInstanceDtoList = new ArrayList<CardInstanceDto>();//cardRestConsumer.getAll(cardInstanceIdList).body;		
 		Map<Sale, CardInstanceDto> zippedSaleCardDto = zipSaleCardDto(saleList, cardInstanceDtoList);
 		return zippedSaleCardDto;
     }
