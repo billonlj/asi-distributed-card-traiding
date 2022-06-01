@@ -52,7 +52,6 @@ public class UserService {
 		//cardInstanceService.giveCardsToNewUser(user);
 		System.out.println("TODO: Give card to user !");
 		try {
-			CardRestConsumer cardRestConsumer = new CardRestConsumer();
 			List<CardInstanceDto> cards = cardRestConsumer.generateCardsForNewUser(user.getIdUser()).getBody();
 			return cards.size() != 0;
 		} catch (Exception e) {
