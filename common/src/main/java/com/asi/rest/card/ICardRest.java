@@ -32,7 +32,7 @@ public interface ICardRest extends IRest {
 	public List<CardDto> getAll();
     
     @GetMapping(GET_CARD_FROM_INSTANCE)
-    public ResponseEntity<CardInstanceDto[]> getCardInstanceList(@PathVariable Integer[] ids);
+    public ResponseEntity<List<CardInstanceDto>> getCardInstanceList(@PathVariable Integer[] ids);
 
     @PostMapping(ADD)
 	public void add(CardInstanceDto cardInstanceDto);
