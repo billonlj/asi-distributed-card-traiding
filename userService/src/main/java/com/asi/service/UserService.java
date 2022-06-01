@@ -1,5 +1,6 @@
 package com.asi.service;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +30,19 @@ import io.jsonwebtoken.impl.TextCodec;
 
 @Service
 public class UserService {
-	
+	CardRestConsumer cardRestConsumer;
+
 	@Autowired
 	UserRepository userRepository;
 
 	@Autowired
 	private HttpServletRequest request;
-	
+
+	@PostConstruct
+	void initConsumer() {
+		cardRestConsumer = new CardRestConsumer();
+	}
+
 	public Boolean addUser(User user) {
 		user.setMoneyUser(1000.0);
 		userRepository.save(user);
