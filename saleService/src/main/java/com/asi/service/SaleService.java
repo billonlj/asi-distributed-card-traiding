@@ -1,19 +1,21 @@
 package com.asi.service;
 
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.sql.Date;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import com.asi.model.Sale;
 import com.asi.repository.SaleRepository;
 
+import com.asi.dto.CardInstanceDto;
+import com.asi.rest.card.CardRestConsumer;
+import com.asi.rest.user.UserRestConsumer;
 
 @Service
 public class SaleService {
@@ -21,26 +23,42 @@ public class SaleService {
 	@Autowired
 	SaleRepository saleRepository;
 
-	RestTemplate restTemplate;
+	private static final CardRestConsumer cardRestConsumer = new CardRestConsumer();
+	private static final UserRestConsumer userRestConsumer = new UserRestConsumer();
 	
-	//@Autowired
-	//UserRepository userRepository;
-
-	//@Autowired
-	//CardInstanceRepository cardInstanceRepository;
+	private Map<Sale, CardInstanceDto> zipSaleCardDto(List<Sale> sales, List<CardInstanceDto> cards) {
+		// On sort avant pour pouvoir matcher l'ordre d'index de la liste et l'ordre des id de cartes
+		//Collections.sort(sales, (a, b) - > a.getCardInstanceIdSale().compareTo(b.getCardInstanceIdSale()));
+		//Collections.sort(cards, (a, b) - > a.getIdInstance().compareTo(b.getIdInstance()));
+		sales.sort(Comparator.comparing(Sale::getCardInstanceIdSale));
+		cards.sort(Comparator.comparing(CardInstanceDto::getIdInstance));
+		Map<Sale, CardInstanceDto> saleCardPairList = new HashMap<>();
+		for(int i = 0; i < sales.size(); i++) {
+			saleCardPairList.put(sales.get(i), cards.get(i));
+		}
+		return saleCardPairList;
+	}
 	
-	public Sale getSale(int id) {
-        Optional<Sale> s = saleRepository.findById(id);
-        if (s.isPresent()) {
-			return s.get();
+	public Map<Sale, CardInstanceDto> getSale(int id) {
+		Optional<Sale> sale = saleRepository.findById(id);
+		if (sale.isPresent()) {
+			CardInstanceDto cardInstanceDto = null;//cardRestConsumer.get(sale.get().getCardInstanceIdSale()).body;
+			Map<Sale, CardInstanceDto> saleCardPair = new HashMap<>(Map.of(sale.get(), cardInstanceDto));
+			return saleCardPair;
 		} else {
 			return null;
 		}
-    }
+	}
 	
-	public List<Sale> getAllSales() {
-		List<Sale> salesList = (List<Sale>) saleRepository.findAll();
-		return salesList;
+	public Map<Sale, CardInstanceDto> getAllSales() {
+		List<Sale> saleList = (List<Sale>) saleRepository.findAll();
+		List<Integer> cardInstanceIdList = saleList
+			.stream()
+			.map(Sale::getCardInstanceIdSale)
+			.collect(Collectors.toList());
+		List<CardInstanceDto> cardInstanceDtoList = null;//cardRestConsumer.getAll(cardInstanceIdList).body;		
+		Map<Sale, CardInstanceDto> zippedSaleCardDto = zipSaleCardDto(saleList, cardInstanceDtoList);
+		return zippedSaleCardDto;
     }
 	
 	private void deduct(int userId, double amount){
@@ -72,7 +90,7 @@ public class SaleService {
 		//Sale sale = new Sale(sellerId, cardId, price);		
 		//saleRepository.save(sale);
 		//cardId.setUserInstance(null);
-		//cardInstanceRepository.save(cardId);		<relativePath /> <!-- lookup parent from repository -->
+		//cardInstanceRepository.save(cardId);
 	}
 	
 	//TODO remove test sur User et use getCurrentUser() + utiliser des exceptions
