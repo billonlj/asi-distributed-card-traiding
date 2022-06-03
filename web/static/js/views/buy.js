@@ -35,7 +35,7 @@ export default class BuyView extends HTMLView {
     }
 
     async buy() {
-        const card = this.selectedCard.card;
+        const card = this.selectedCard.cardInstance;
         const transaction = {idCard: card.idCard, idSale: card.idSale}
 		await SaleService.buyCard(transaction);
         this.render()

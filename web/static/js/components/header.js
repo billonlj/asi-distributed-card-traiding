@@ -32,6 +32,7 @@ class Header extends HTMLBindableElement {
 
     logout() {
         userService.logout();
+        this.router = getGlobalComponent("router");
         this.router.redirect("home")
     }
 

@@ -42,20 +42,12 @@ public class SaleController implements ISaleRest {
 
 	@Override
 	public void sellCard(@RequestBody SaleTransactionDto saleDto) {
-		System.out.println("___________________\n");
-		System.out.println(saleDto.getIdCard());
-		System.out.println("___________________\n");
 		saleService.sell(saleDto.getIdUser(), saleDto.getIdCard(), saleDto.getPriceSale());
-		System.out.println(saleDto.getIdSale() + " " + saleDto.getIdUser() + " " + saleDto.getPriceSale());
 	}
 	
 	@Override
 	public void buyCard(@RequestBody SaleTransactionDto saleDto) {
-		System.out.println("___________________\n");
-		System.out.println(saleDto.getIdCard());
-		System.out.println("___________________\n");
 		saleService.buy(saleDto.getIdSale(), saleDto.getIdUser());
-		System.out.println(saleDto.getIdSale() + " " + saleDto.getIdUser());
 	}
 
 }

@@ -101,6 +101,10 @@ public class SaleService {
 		seller.setIdUser(sale.getUserIdSale());
 
 		try {
+			System.out.println("Service_______________________________\n");
+			System.out.println(buyer.getIdUser() + buyer.getBalanceMoney() + buyer.toString());
+			System.out.println("Service_______________________________\n");
+
 			Boolean buyHappened = userRestConsumer.balanceUserMoney(buyer).getBody();
 			Boolean sellHappened = userRestConsumer.balanceUserMoney(seller).getBody();
 			

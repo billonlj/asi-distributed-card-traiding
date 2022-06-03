@@ -45,8 +45,8 @@ export default class SellView extends HTMLView {
         if(priceSale === undefined || isNaN(priceSale)) {
             this.errorSpan.innerHTML = "Invalid price"
         } else {
-            const card = this.selectedCard.card;
-            const transaction = {idCard: card.idInstance, priceSale}
+            const cardInstance = this.selectedCard.cardInstance;
+            const transaction = {idCard: cardInstance.idInstance, priceSale}
             await SaleService.sellCard(transaction);
             this.render();
         }

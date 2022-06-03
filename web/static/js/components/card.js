@@ -4,14 +4,8 @@ import HTMLBindableElement from "./abstract/HTMLBindableElement.js";
 class FullCard extends HTMLBindableElement {
     constructor(card, isSell = false) {
         super();
-
-        if(card) {
-            this.card = card;
-            this.cardInstance = card.cardInstance !== undefined ? card.cardInstance : card; 
-            //this.cardDescription = card.cardInstance !== undefined ? card.cardInstance : card.card; 
-        }
-        
         this.isSell = isSell;
+        this.setCard(card);
     }
 
     bind(callback, name) {
@@ -63,9 +57,9 @@ class FullCard extends HTMLBindableElement {
                             </div>
                             <div class="ui fluid image">
                                 <a class="ui left corner label">
-                                    ${this.cardInstance.card.nameCard}
+                                    ${this.card.nameCard}
                                 </a>
-                                <img id="cardImgId" class="ui centered image" src="${this.cardInstance.card.sourceUrlCard}">
+                                <img id="cardImgId" class="ui centered image" src="${this.card.sourceUrlCard}">
                             </div>
                         </div>
                     </div>
@@ -73,7 +67,7 @@ class FullCard extends HTMLBindableElement {
                         <div class="ui form tiny">
                             <div class="field">
                                 <label id="cardNameId"></label>
-                                <textarea id="cardDescriptionId" class="overflowHiden" readonly="" rows="2">${this.cardInstance.card.descriptionCard}
+                                <textarea id="cardDescriptionId" class="overflowHiden" readonly="" rows="2">${this.card.descriptionCard}
                                 </textarea>
                             </div>
                         </div>
@@ -120,10 +114,10 @@ class FullCard extends HTMLBindableElement {
         if(this.callback) this.callback()
     }
 
-    setCard(newCard) {
-        this.card = newCard;
-        this.cardInstance = card.cardInstance;
-		//this.cardDescription = newCard.cardInstance !== undefined ? newCard.cardInstance : newCard.card;
+    setCard(wrapper) {
+        this.cardInstance = this.isSell ? wrapper : wrapper.cardInstance;
+        this.card = this.cardInstance.card;
+
         this.render();
     }  
 }

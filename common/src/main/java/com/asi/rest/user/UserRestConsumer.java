@@ -9,8 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class UserRestConsumer implements IUserRest {
 
-    @Autowired
-	private RestTemplate restTemplate;
+	private RestTemplate restTemplate = new RestTemplate();;
 
     @Override
     public ResponseEntity<UserDto> getUserProfile() {
@@ -19,6 +18,9 @@ public class UserRestConsumer implements IUserRest {
 
     @Override
     public ResponseEntity<Boolean> balanceUserMoney(BalanceUserDto userDto) {
+        System.out.println("Consumer_______________________________\n");
+		System.out.println(restTemplate + BASE_PATH + BALANCE + userDto + Boolean.class);
+		System.out.println("Consumer_______________________________\n");
         return restTemplate.postForEntity(BASE_PATH + BALANCE, userDto, Boolean.class);
     }
 }

@@ -76,12 +76,12 @@ class CardList extends HTMLBindableElement {
                 .replace(/{{family_name}}/g, card.familyCardDto?.nameFamily)
                 .replace(/{{img_src}}/g, card.sourceUrlCard)
                 .replace(/{{name}}/g, card.nameCard)
-				.replace(/{{description}}/g, card.descriptionCard)
+				.replace(/{{description}}/g, card.descriptioncard)
 				.replace(/{{hp}}/g, cardInstance.hpInstance)
 				.replace(/{{energy}}/g, cardInstance.energyInstance)
 				.replace(/{{attack}}/g, cardInstance.attackinstance)
 				.replace(/{{defense}}/g, cardInstance.defenceInstance)
-				.replace(/{{price}}/g, card.priceSale)
+				.replace(/{{price}}/g, wrapper.priceSale)
             
 			clone.firstElementChild.innerHTML = newContent;
 			container.appendChild(clone);
