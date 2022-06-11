@@ -1,7 +1,11 @@
 package com.asi.service;
 
+import com.asi.dto.CardInstanceDto;
 import com.asi.dto.RoomDto;
+import com.asi.dto.games.JoinRoomDto;
+import com.asi.model.Player;
 import com.asi.model.Room;
+import com.asi.rest.card.CardRestConsumer;
 import com.asi.utils.SseHandler;
 
 import org.slf4j.Logger;
@@ -22,28 +26,30 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class GameService {
     private final static Logger LOG = LoggerFactory.getLogger(GameService.class);
 
+
+    private CardRestConsumer cardRestConsumer = new CardRestConsumer();
     Map<Integer, Room> rooms = new HashMap<Integer, Room>();
     SseHandler roomsHandler = new SseHandler();
 
     public void initJob() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        // ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        executor.execute(() -> {
-            while(true) {
-                for (Room room : rooms.values()) {
-                    SseHandler handler = room.emitterRoom;
+        // executor.execute(() -> {
+        //     while(true) {
+        //         for (Room room : rooms.values()) {
+        //             SseHandler handler = room.emitterRoom;
     
-                    for (Map.Entry<String, SseEmitter> connection : handler.emitters.entrySet()) {
-                        SseEmitter emitter = connection.getValue();
-                        try {
-                            emitter.send(room);
-                        } catch (IOException e) {
-                        }
-                    }
-                }
-                randomDelay();
-            }
-        });
+        //             for (Map.Entry<String, SseEmitter> connection : handler.emitters.entrySet()) {
+        //                 SseEmitter emitter = connection.getValue();
+        //                 try {
+        //                     emitter.send(room);
+        //                 } catch (IOException e) {
+        //                 }
+        //             }
+        //         }
+        //         randomDelay();
+        //     }
+        // });
     }
 
     private void randomDelay() {
@@ -61,17 +67,32 @@ public class GameService {
     public Room createRoom(RoomDto room) {
         Integer size = rooms.size();
         Room newRoom = new Room(size, room.getNameRoom());
-        System.out.println("Create room: " + size);
         rooms.put(size, newRoom);
         dispatchrooms();
         return newRoom;
     }
 
-    public SseEmitter joinRoom(int idRoom) {
-        if(!rooms.containsKey(idRoom)) 
+    public Room joinRoom(JoinRoomDto joinRoomDto) {
+        if(!rooms.containsKey(joinRoomDto.getIdRoom())) 
             return null;
 
-        return rooms.get(idRoom).addPlayer();
+        try {
+            CardInstanceDto card = cardRestConsumer.getCardInstanceList(new Integer[] { joinRoomDto.getIdCardInstance()}).getBody().get(0);
+            Player newPlayer = new Player(joinRoomDto.getIdUser(), joinRoomDto.getIdCardInstance(), card);
+            Room room = rooms.get(joinRoomDto.getIdRoom());
+            room.addPlayer(newPlayer);
+            return room;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public SseEmitter joinRoomSse(int idRoom, int idUser) {
+        if(!rooms.containsKey(idRoom)) 
+            return null;
+        
+        SseEmitter result = rooms.get(idRoom).joinRoom(idUser);
+        return result;
     }
 
     public SseEmitter getEmitterAvailaleRooms() {

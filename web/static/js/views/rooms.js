@@ -9,6 +9,8 @@ import CardService from "../services/cardService.js";
 export default class RoomsView extends HTMLView {
     constructor() {
         super();
+
+        this.selectedRoom = undefined;
     }
 
     async render() {
@@ -17,11 +19,14 @@ export default class RoomsView extends HTMLView {
             <div class="ui grid">
                 <div class="ten wide column" id="rooms">
                 </div>
-                <button class="ui red button" onclick="${this.bind(() => this.toggleModal('show') ,"showModalAction")}">
+                <button class="ui red button" onclick="${this.bind(() => this.toggleModalCreate('show') ,"showCreateModalAction")}">
                     Add room
                 </button>
             </div>
-            <div class="ui modal" id="modal-rooms">
+
+
+
+            <div class="ui modal" id="create-modal-rooms">
                 <i class="close icon"></i>
                 <div class="header">
                     Room creation
@@ -32,15 +37,36 @@ export default class RoomsView extends HTMLView {
                             <i class="user icon"></i>
                         </div>
                     </div>
+                </div>
+                <div class="actions">
+                    <div class="ui black deny button" onclick="${this.bind(() => this.toggleModalCreate('hide') ,"hideCreateModalAction")}">
+                        Cancel
+                    </div>
+                    <div class="ui positive right labeled icon button"  onclick="${this.bind(() => this.createRoom() ,"createRoomAction")}">
+                        <span id="modal-display"></span>
+                        <i class="checkmark icon"></i>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="ui modal" id="join-modal-rooms">
+                <i class="close icon"></i>
+                <div class="header">
+                    Join the room: <span id="roomLabel"></span>
+                </div>
+                <div class="content">
                     <div class="ten wide column" id="list-cards">
                     </div>
                 </div>
                 <div class="actions">
-                    <div class="ui black deny button" onclick="${this.bind(() => this.toggleModal('hide') ,"hideModalAction")}">
+                    <div class="ui black deny button" onclick="${this.bind(() => this.toggleModalJoin('hide') , "hideJoinModalAction")}">
                         Cancel
                     </div>
-                    <div class="ui positive right labeled icon button"  onclick="${this.bind(() => this.createRoom() ,"createRoomAction")}">
-                        Create room
+                    <div class="ui positive right labeled icon button"  onclick="${this.bind(() => this.joinRoom() ,"joinRoomAction")}">
+                        <span id="modal-display">Join the room</span>
                         <i class="checkmark icon"></i>
                     </div>
                 </div>
@@ -52,40 +78,66 @@ export default class RoomsView extends HTMLView {
         this.querySelector("#rooms").appendChild(this.roomList);
 
         this.cards = await CardService.getCardUser();
-        this.selectedCard = null;
-        this.cardsContainer = new CardList(this.cards, (card) => this.selectCard(card));
+        this.cardsContainer = new CardList(this.cards, (card) => this.selectCard(card), true);
         this.querySelector("#list-cards").appendChild(this.cardsContainer);
 
         this.nameInput = new InputCustom("text", "name", "Room name");
         this.querySelector("#roomNameContainer").appendChild(this.nameInput);
 
+        this.display = document.querySelector("#modal-display");
+        this.display.innerHTML = this.action;
+
+        this.roomLabel = document.querySelector("#roomLabel");
+
         roomService.addAvailableRoomsEventListener("renderList", (rooms) => this.roomList.setRooms(rooms));
     }
 
     selectCard(card) {
-        console.log(card)
         this.selectedCard = card;
     }
 
-    selectRoom(room) {
-        roomService.joinRoom(room);
-        this.router.redirect("lobby");
+    async selectRoom(room) {
+        this.selectedRoom = room;
+        this.roomLabel.innerHTML = room?.nameRoom;
+        this.toggleModalJoin('show');
     }
 
-    toggleModal(status) {
-        $('#modal-rooms').modal(status);
+    toggleModalCreate(status) {
+        $('#create-modal-rooms').modal(status);
+    }
+
+    toggleModalJoin(status) {
+        $('#join-modal-rooms').modal(status);
     }
 
     async createRoom() {
-        console.log(this.selectedCard)
-
         const room = await roomService.createRoom({
             nameRoom: this.nameInput.getValue()
         });
         if(!room) return;
 
-        console.log(room)
+        this.toggleModalCreate('hide');
+        
+        this.selectedRoom = room;
         this.selectRoom(room);
+    }
+
+    async joinRoom() {
+        if(!this.selectedRoom) {
+            alert("Vous n'avez pas sélectionné de room !");
+        }
+
+        if(!this.selectedCard) {
+            alert("Vous n'avez pas sélectionné de carte !");
+        }
+
+        const joinRoomDto = {
+            idRoom: this.selectedRoom.idRoom,
+            idCardInstance: this.selectedCard.idInstance,
+        }
+
+        await roomService.joinRoom(joinRoomDto);
+        this.router.redirect("lobby");
     }
 }
 

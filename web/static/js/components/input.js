@@ -18,11 +18,22 @@ class InputCustom extends HTMLElement {
         return this.firstElementChild.value
     }
 
-    connectedCallback() {
+    render() {
         this.innerHTML = `
             <input type="${this.type}" name="${this.name}" placeholder="${this.placeholder}">
-      `;
+        `;
     }
+
+    setText(text) {
+        this.placeholder = text;
+        this.render();
+    }
+
+    connectedCallback() {
+        this.render();
+    }
+
+
 }
 
 customElements.define('input-custom', InputCustom);

@@ -96,6 +96,7 @@ services:
 
   static:
     build: web/
+    container_name: web
     restart: always
     networks:
       - general-network

@@ -4,6 +4,13 @@ package com.asi.model;
 import com.asi.enums.GameStatus;
 import com.asi.utils.SseHandler;
 
+import java.io.IOException;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public class Room {
@@ -13,6 +20,10 @@ public class Room {
 
     public SseHandler emitterRoom = new SseHandler();
     public int numberOfPlayers = 0;
+
+
+    private final Map<Integer, Player> players = new HashMap<Integer, Player>();
+    private final Map<Integer, Player> waitingPlayers = new HashMap<Integer, Player>();
 
     public Room(Integer idRoom, String nameRoom) {
         this.idRoom = idRoom;
@@ -25,20 +36,58 @@ public class Room {
         this.emitterRoom = emitterRoom;
     }
 
-    public SseEmitter addPlayer() {
-        // block new connections if the game is already full or has started
-        if(this.getStatus() == GameStatus.FULL || this.getStatus() == GameStatus.STARTED) {
+    public void addPlayer(Player player) {
+        if(players.containsKey(player.getIdUser())) 
+            return;
+
+        waitingPlayers.put(Integer.valueOf(player.getIdUser()), player);
+    }
+
+    public SseEmitter joinRoom(int idPlayer) {
+        Integer idCurrentPlayer = Integer.valueOf(idPlayer);
+
+
+        if(players.containsKey(idCurrentPlayer)) {
+            return this.emitterRoom.addClient();
+        }
+
+        if(!waitingPlayers.containsKey(idCurrentPlayer)) {
             return null;
-        } 
+        }
+
+        // block new connections if the game is already full or has started
+        if(status == GameStatus.FULL || status == GameStatus.STARTED) {
+            return null;
+        }
+
+        players.put(idCurrentPlayer, waitingPlayers.get(idCurrentPlayer));
+        waitingPlayers.remove(idCurrentPlayer);
 
         SseEmitter newPlayer = this.emitterRoom.addClient();
-        this.numberOfPlayers = this.emitterRoom.emitters.size();
+        this.numberOfPlayers = players.size();
+
+        dispatchUpdate();
 
         if(this.numberOfPlayers >= 2){
-            this.setStatus(GameStatus.FULL);
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            executor.execute(() -> {
+                this.startGame();
+            });
         }
 
         return newPlayer;
+    }
+
+    private void startGame() {
+        try {
+            this.setStatus(GameStatus.FULL);
+            dispatchUpdate();
+            Thread.sleep(3000);
+            this.setStatus(GameStatus.STARTED);
+            dispatchUpdate();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public GameStatus getStatus() {
@@ -67,5 +116,18 @@ public class Room {
     }
     public void setHandlerRoom(SseHandler emitterRoom) {
         this.emitterRoom = emitterRoom;
+    }
+
+
+
+    private void dispatchUpdate() {
+        for (Map.Entry<String, SseEmitter> connection : emitterRoom.emitters.entrySet()) {
+            try {
+                SseEmitter emitter = connection.getValue();
+                emitter.send(this);
+            } catch (IOException e) {
+                
+            }
+        }
     }
 }

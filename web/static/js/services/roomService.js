@@ -1,8 +1,8 @@
 import Store from "../utils/store.js";
 import API from "../utils/axios.js";
+import userService from "../services/userService.js"
 
-const baseUrl = "http://localhost/api/rooms/sse";
-
+const baseSSEUrl = "http://localhost/api/rooms/sse";
 const getHeaders = () => ({
     headers: {
         Authorization: Store.getItem('user')?.token
@@ -10,7 +10,7 @@ const getHeaders = () => ({
 })
 
 const availableRoomsEvents = {}
-const streamAvailableRooms = new EventSourcePolyfill(baseUrl, getHeaders());
+const streamAvailableRooms = new EventSourcePolyfill(baseSSEUrl, getHeaders());
 streamAvailableRooms.onmessage = (event) => {
     const rooms = JSON.parse(event.data);
 
@@ -27,6 +27,7 @@ const setCurrentRoom = (eventSource) => {
     currentRoom = eventSource;
     currentRoom.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log(data)
 
         for (const [key, currentRoomEvent] of Object.entries(currentRoomEvents)) {
             currentRoomEvent(data);
@@ -38,8 +39,8 @@ const isConnectedToRoom = () => {
     return currentRoom !== undefined;
 }
 
-const joinRoom = (room) => {
-    setCurrentRoom(new EventSourcePolyfill(baseUrl + "/join/" + room.idRoom, getHeaders()));
+const joinRoomSSE = (room) => {
+    setCurrentRoom(new EventSourcePolyfill(baseSSEUrl + "/join/" + room.idRoom + "/" + userService.get_user_id(), getHeaders()));
 }
 
 export default {
@@ -51,7 +52,18 @@ export default {
             return null;
         }
     },
-    joinRoom,
+    async joinRoom(roomDto) {
+        try {
+            const response = await API.post('/rooms/join', {
+                ...roomDto,
+                idUser: userService.get_user_id()
+            });
+            joinRoomSSE(roomDto);
+            return response.data;
+        } catch (error) {   
+            return null;
+        }
+    },
 
     async getAvailabeRooms() {
         try {

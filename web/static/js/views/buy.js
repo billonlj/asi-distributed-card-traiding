@@ -23,7 +23,7 @@ export default class BuyView extends HTMLView {
             </div>
         `;
 
-        this.cardsContainer = new CardList(this.cards, (card) => this.selectCard(card), false);
+        this.cardsContainer = new CardList(this.cards, (card) => this.selectCard(card));
         this.querySelector("#cards").appendChild(this.cardsContainer);
         this.selectedCard = new Card(this.cards[0]);
         this.selectedCard.bindOnButtonClick(() => this.buy())
@@ -35,8 +35,9 @@ export default class BuyView extends HTMLView {
     }
 
     async buy() {
-        const card = this.selectedCard.cardInstance;
-        const transaction = {idCard: card.idCard, idSale: card.idSale}
+        const sale = this.selectedCard.wrapper;
+        console.log(sale)
+        const transaction = {idSale: sale.idSale}
 		await SaleService.buyCard(transaction);
         this.render()
     }

@@ -1,6 +1,7 @@
 package com.asi.controller;
 
 import com.asi.dto.RoomDto;
+import com.asi.dto.games.JoinRoomDto;
 import com.asi.model.Room;
 import com.asi.service.GameService;
 import com.asi.utils.SseHandler;
@@ -52,14 +53,19 @@ public class GameController {
         return gameService.createRoom(roomDto);
     }
 
+    @PostMapping("/api/rooms/join")
+    public Room joinRoom(@RequestBody JoinRoomDto joinRoomDto) {
+        return gameService.joinRoom(joinRoomDto);
+    }
+
 
     @RequestMapping("/api/rooms/sse")
     public SseEmitter streamRooms() {
         return gameService.getEmitterAvailaleRooms();
     }
 
-    @GetMapping(value = "/api/rooms/sse/join/{idRoom}")
-    public SseEmitter join(@PathVariable int idRoom) {
-        return gameService.joinRoom(idRoom);
+    @GetMapping(value = "/api/rooms/sse/join/{idRoom}/{idUser}")
+    public SseEmitter join(@PathVariable int idRoom, @PathVariable int idUser) {
+        return gameService.joinRoomSse(idRoom, idUser);
     }
 }

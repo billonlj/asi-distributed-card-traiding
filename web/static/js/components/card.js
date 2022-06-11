@@ -115,6 +115,7 @@ class FullCard extends HTMLBindableElement {
     }
 
     setCard(wrapper) {
+        this.wrapper = wrapper;
         this.cardInstance = this.isSell ? wrapper : wrapper.cardInstance;
         this.card = this.cardInstance.card;
 
