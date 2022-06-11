@@ -67,7 +67,7 @@ class FullCard extends HTMLBindableElement {
                         <div class="ui form tiny">
                             <div class="field">
                                 <label id="cardNameId"></label>
-                                <textarea id="cardDescriptionId" class="overflowHiden" readonly="" rows="2">${this.card.descriptionCard}
+                                <textarea id="cardDescriptionId" class="overflowHiden" readonly="" rows="2">${this.card.descriptioncard}
                                 </textarea>
                             </div>
                         </div>
