@@ -26,11 +26,16 @@ const setCurrentRoom = (eventSource) => {
 
     currentRoom = eventSource;
     currentRoom.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log(data)
-
-        for (const [key, currentRoomEvent] of Object.entries(currentRoomEvents)) {
-            currentRoomEvent(data);
+        try {
+            const data = JSON.parse(event.data);
+            console.log(data)
+    
+            for (const [key, currentRoomEvent] of Object.entries(currentRoomEvents)) {
+                currentRoomEvent(data);
+            }
+            
+        } catch (error) {
+            console.log("Error: ", event)
         }
     }
 }

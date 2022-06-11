@@ -12,19 +12,19 @@ export default class LobbyView extends HTMLView {
     async render() {
         this.innerHTML = `
             <header-component></header-component>
-            <div class="ui grid">
-                <div class="ui segment" id="lobby-loader">
-                    <div class="ui active dimmer">
-                        <div class="ui text loader">Waiting for the game to start...</div>
-                    </div>
-                    <p></p>
+            <div class="ui segment style-important" id="lobby-loader">
+                <div class="ui active dimmer">
+                    <div class="ui text loader">Waiting for the game to start...</div>
                 </div>
-                <div class="ten wide column" id="eventRoom">
+                <p></p>
+            </div>
+            <div class="ui grid" id="eventRoom">
+                <div class="ten wide column">
                 </div>
             </div>
         `;
 
-        this.loader = document.querySelector("#lobby-loader");
+        this.loader = this.querySelector("#lobby-loader");
         this.eventRoom = this.querySelector("#eventRoom");
 
         this.updateStatus(false);
@@ -36,8 +36,6 @@ export default class LobbyView extends HTMLView {
         this.eventRoom.appendChild(this.enemyCard);
 
         roomService.addCurrentRoomEventListener("updateLobby", (room) => {
-            this.eventRoom.innerHTML = `GameStatus ${room.status}`;
-
             this.updateStatus(room.status == "STARTED");
             this.updateCards(room);
         });
@@ -46,7 +44,15 @@ export default class LobbyView extends HTMLView {
     updateCards(room) {
         console.log(room)
         console.log("My card: ", room.players[userService.get_user_id()]);
-        this.myCard.setCard(room.players[userService.get_user_id()]);
+        this.myCard.setCard(room.players[userService.get_user_id()].cardInstance);
+
+        for (const [idPlayer, player] of Object.entries(room.players)) {
+            if(idPlayer == userService.get_user_id()) {
+                this.myCard.setCard(player.cardInstance)
+            } else {
+                this.enemyCard.setCard(player.cardInstance)
+            }
+        }
     }
 
     updateStatus(status = false) {

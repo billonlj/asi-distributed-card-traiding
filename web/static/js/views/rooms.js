@@ -43,7 +43,7 @@ export default class RoomsView extends HTMLView {
                         Cancel
                     </div>
                     <div class="ui positive right labeled icon button"  onclick="${this.bind(() => this.createRoom() ,"createRoomAction")}">
-                        <span id="modal-display"></span>
+                        <span id="modal-display">Create a room</span>
                         <i class="checkmark icon"></i>
                     </div>
                 </div>
@@ -83,9 +83,6 @@ export default class RoomsView extends HTMLView {
 
         this.nameInput = new InputCustom("text", "name", "Room name");
         this.querySelector("#roomNameContainer").appendChild(this.nameInput);
-
-        this.display = document.querySelector("#modal-display");
-        this.display.innerHTML = this.action;
 
         this.roomLabel = document.querySelector("#roomLabel");
 

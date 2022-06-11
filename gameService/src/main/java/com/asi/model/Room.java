@@ -18,11 +18,11 @@ public class Room {
     private String nameRoom;
     private GameStatus status = GameStatus.AVAILABLE;
 
-    public SseHandler emitterRoom = new SseHandler();
+    private SseHandler emitterRoom = new SseHandler();
     public int numberOfPlayers = 0;
 
 
-    private final Map<Integer, Player> players = new HashMap<Integer, Player>();
+    Map<Integer, Player> players = new HashMap<Integer, Player>();
     private final Map<Integer, Player> waitingPlayers = new HashMap<Integer, Player>();
 
     public Room(Integer idRoom, String nameRoom) {
@@ -66,13 +66,13 @@ public class Room {
         SseEmitter newPlayer = this.emitterRoom.addClient();
         this.numberOfPlayers = players.size();
 
-        dispatchUpdate();
-
         if(this.numberOfPlayers >= 2){
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 this.startGame();
             });
+        } else {
+            dispatchUpdate();
         }
 
         return newPlayer;
@@ -116,6 +116,13 @@ public class Room {
     }
     public void setHandlerRoom(SseHandler emitterRoom) {
         this.emitterRoom = emitterRoom;
+    }
+
+    public Map<Integer, Player> getPlayers() {
+        return this.players;
+    }
+    public void setPlayers(Map<Integer, Player> players) {
+        this.players = players;
     }
 
 
