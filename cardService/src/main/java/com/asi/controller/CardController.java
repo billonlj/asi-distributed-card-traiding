@@ -72,10 +72,6 @@ public class CardController implements ICardRest {
 				.map(this::convertToCardInstanceDto)
 				.collect(Collectors.toList());
 		
-		for (CardInstanceDto card : cardInstanceDto) {
-			card.setCard(convertToCardDto(cardService.getCard(card.getCardIdInstance())));
-		}
-		
 		return new ResponseEntity<List<CardInstanceDto>>(cardInstanceDto , HttpStatus.OK);
 	}
 	
@@ -141,6 +137,8 @@ public class CardController implements ICardRest {
 	private CardInstanceDto convertToCardInstanceDto(CardInstance cardInstance) {
 		CardInstanceDto cardInstanceDto = modelMapper.map(cardInstance, CardInstanceDto.class);
 		cardInstanceDto.setCardIdInstance(cardInstance.getCardInstance().getIdCard());
+		cardInstanceDto.setCard(convertToCardDto(cardService.getCard(cardInstanceDto.getCardIdInstance())));
+
 		return cardInstanceDto;
 	}
 	
