@@ -16,6 +16,8 @@
   
   <properties>
 		<java.version>1.8</java.version>
+		<sonar.organization>billonlj</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<dependencies>
@@ -88,26 +90,26 @@
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
+			<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.7</version>
 				<executions>
-					<execution>
+				<execution>
 					<id>prepare-agent</id>
 					<goals>
-						<goal>prepare-agent</goal>
+					<goal>prepare-agent</goal>
 					</goals>
-					</execution>
-					<execution>
+				</execution>
+				<execution>
 					<id>report</id>
 					<goals>
-						<goal>report</goal>
+					<goal>report</goal>
 					</goals>
 					<configuration>
-						<formats>
+					<formats>
 						<format>XML</format>
-						</formats>
+					</formats>
 					</configuration>
-					</execution>
+				</execution>
 				</executions>
 			</plugin>
 		</plugins>
